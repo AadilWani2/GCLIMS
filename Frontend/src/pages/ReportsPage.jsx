@@ -100,6 +100,8 @@ const ReportsPage = () => {
   const [reports, setReports] =
     useState([]);
 
+  const [isDownloaded, setIsDownloaded] = useState(false);
+
   const [editingReportId, setEditingReportId] =
     useState(null);
 
@@ -816,6 +818,7 @@ const ReportsPage = () => {
     const pdf = generatePDF(index);
     if (!pdf) return;
     pdf.save(`${patientName.replace(/\s+/g, "_")}_Laboratory_Report.pdf`);
+    setIsDownloaded(true);
   };
 
   const shareWhatsApp = (phone, patientId, patientName = "Valued Patient") => {
@@ -830,60 +833,278 @@ const ReportsPage = () => {
     );
   };
 
-  return (
-    <div className="space-y-10 relative">
-      {/* Patient Mode Full-Page Overlay */}
-      {!isStaff && (
-        <div className="fixed inset-0 z-50 bg-slate-50 flex flex-col items-center justify-center p-6 text-center font-inter">
-          <div className="max-w-md w-full bg-white rounded-3xl border border-slate-150 p-8 shadow-xl shadow-slate-200/50 flex flex-col items-center gap-6">
-            {/* Brand Logo with Pulsing Ring */}
-            <div className="relative flex items-center justify-center">
-              <div className="w-16 h-16 rounded-2xl bg-teal-50 border border-teal-150 flex items-center justify-center text-teal-600 shadow-sm animate-pulse">
-                <span className="text-2xl font-black font-outfit">GD</span>
-              </div>
-              <div className="absolute inset-0 rounded-2xl border-2 border-teal-500 border-t-transparent animate-spin w-16 h-16"></div>
+  if (!isStaff) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6 text-center font-inter select-none">
+        {/* Beautiful high-end clinical card */}
+        <div className="max-w-md w-full bg-white rounded-3xl border border-slate-100 p-8 shadow-xl shadow-slate-200/50 flex flex-col items-center gap-6 relative overflow-hidden">
+          {/* Subtle medical design element (top colored bar) */}
+          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-teal-500 to-indigo-600"></div>
+
+          {/* Logo with pulsing micro-animations */}
+          <div className="relative flex items-center justify-center mt-2">
+            <div className="w-20 h-20 rounded-2xl bg-teal-50 border border-teal-100 flex items-center justify-center text-teal-600 shadow-sm animate-pulse">
+              <span className="text-3xl font-black font-outfit tracking-tighter">GD</span>
             </div>
+            <div className="absolute inset-0 rounded-2xl border-2 border-teal-500 border-t-transparent animate-spin w-20 h-20 pointer-events-none"></div>
+          </div>
 
-            <div>
-              <h2 className="font-black font-outfit text-slate-800 text-lg leading-snug">Gousia Diagnostics</h2>
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Secure Report Portal</p>
-            </div>
+          <div>
+            <h2 className="font-black font-outfit text-slate-800 text-2xl leading-none tracking-tight">Gousia Diagnostics</h2>
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-2">Secure Patient Portal</p>
+          </div>
 
-            {reports.length === 0 ? (
-              <div className="space-y-2">
-                <div className="w-24 h-2 bg-slate-100 rounded-full mx-auto animate-pulse"></div>
-                <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Loading secure laboratory records...</p>
+          {reports.length === 0 ? (
+            <div className="space-y-4 py-4 w-full">
+              <div className="flex justify-center items-center gap-1.5">
+                <div className="w-2 h-2 bg-teal-500 rounded-full animate-bounce"></div>
+                <div className="w-2 h-2 bg-teal-500 rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
+                <div className="w-2 h-2 bg-teal-500 rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
               </div>
-            ) : (
-              <div className="space-y-4 w-full">
-                <div className="bg-emerald-50/50 border border-emerald-100 p-4 rounded-2xl">
-                  <p className="text-xs text-emerald-700 font-bold leading-relaxed">
-                    ✓ Your laboratory report is ready!
-                  </p>
-                  <p className="text-[11px] text-slate-500 mt-1">
-                    The PDF has been generated and is downloading to your device automatically.
-                  </p>
-                </div>
+              <p className="text-xs text-slate-500 font-medium tracking-wide">Retrieving secure clinical records from server...</p>
+            </div>
+          ) : !isDownloaded ? (
+            <div className="space-y-5 w-full py-2">
+              <div className="bg-teal-50/50 border border-teal-100 p-4 rounded-2xl">
+                <p className="text-xs text-teal-800 font-bold leading-relaxed flex items-center justify-center gap-1.5">
+                  <span className="animate-pulse">🔄</span> Compiling Clinical Report PDF...
+                </p>
+                <p className="text-[11px] text-slate-500 mt-1">
+                  We are generating your final certified PDF report. Your download should start automatically in a moment.
+                </p>
+              </div>
 
-                <div className="space-y-2.5">
-                  <p className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">Patient: {reports[0].patient?.name}</p>
+              <div className="space-y-3">
+                <p className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">Patient: {reports[0].patient?.name || "Patient"}</p>
+                <button
+                  id="btn-manual-download"
+                  onClick={() => downloadPDF(0, reports[0].patient?.name || "Patient")}
+                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white transition-all font-bold text-xs shadow-lg shadow-teal-600/20 active:scale-95 cursor-pointer border-none"
+                >
+                  📥 Click to Download PDF Manually
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-5 w-full py-2">
+              <div className="bg-emerald-50/60 border border-emerald-100 p-4 rounded-2xl animate-fade-in">
+                <p className="text-xs text-emerald-800 font-bold leading-relaxed flex items-center justify-center gap-1.5">
+                  ✓ Report Download Complete!
+                </p>
+                <p className="text-[11px] text-slate-500 mt-1">
+                  The clinical PDF file has been downloaded to your device's download folder.
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <p className="text-xs text-slate-500 font-medium">You can now safely close this browser window.</p>
+                <div className="flex gap-2">
                   <button
+                    id="btn-redownload"
                     onClick={() => downloadPDF(0, reports[0].patient?.name || "Patient")}
-                    className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-teal-600 hover:bg-teal-700 text-white transition font-bold text-xs shadow-md shadow-teal-600/10 cursor-pointer"
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition font-bold text-xs cursor-pointer border border-slate-200 border-solid"
                   >
-                    📥 Click to Download PDF Manually
+                    🔄 Download Again
                   </button>
                 </div>
               </div>
-            )}
-
-            {/* Clinical Footer */}
-            <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider border-t pt-4 border-slate-100 w-full mt-2">
-              Accurate Results, Better Health 🔬
             </div>
+          )}
+
+          {/* Clinical Branding Footer */}
+          <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider border-t pt-4 border-slate-100 w-full mt-2">
+            Accurate Results, Better Health 🔬
           </div>
         </div>
-      )}
+
+        {/* Hidden Container for jsPDF DOM extraction */}
+        <div style={{ position: "absolute", top: "-9999px", left: "-9999px", opacity: 0, pointerEvents: "none" }}>
+          {reports.map((report, reportIndex) => (
+            <div
+              key={report._id}
+              className="bg-white p-10 max-w-5xl mx-auto border border-slate-100"
+            >
+              {/* Top Branding Ribbon */}
+              <div className="w-full flex h-2 rounded-full overflow-hidden mb-8">
+                <div className="w-2/3 bg-slate-900"></div>
+                <div className="w-1/3 bg-teal-600"></div>
+              </div>
+
+              {/* HEADER */}
+              <div className="border-b-2 border-double pb-6 mb-6 relative flex flex-row items-center justify-between gap-4 min-h-[140px]">
+                <div className="flex items-center justify-start shrink-0 pt-3">
+                  <img
+                    id={`logo-img-${report._id}`}
+                    src="/logo.jpg"
+                    alt="Gousia Clinical Laboratory Logo"
+                    className="w-36 h-36 object-cover rounded-full"
+                    crossOrigin="anonymous"
+                  />
+                </div>
+
+                <div className="flex-1 px-4">
+                  <h1 className="text-3xl font-extrabold text-slate-900 tracking-wider uppercase leading-tight">
+                    GOUSIA CLINICAL LABORATORY
+                  </h1>
+                  <p className="text-xs font-bold text-teal-600 mt-2.5 uppercase tracking-[0.2em]">
+                    ADVANCED DIAGNOSTIC & ACCURACY
+                  </p>
+                  <p className="text-[10.5px] font-semibold text-slate-500 mt-2 uppercase tracking-widest">
+                    Add-Hajan bandipora Contact-7006318084
+                  </p>
+                </div>
+
+                <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right self-center">
+                  Regd No :- PRO/CMO Bandipora- 0100900072
+                </div>
+              </div>
+
+              {/* PATIENT INFO */}
+              <div 
+                className="relative p-6 rounded-2xl bg-slate-50 border border-slate-200 mt-8 mb-8"
+                style={{ borderLeft: "5px solid #0D9488" }}
+              >
+                <div className="grid grid-cols-3 gap-6 items-center">
+                  <div className="space-y-2.5 text-[13px]">
+                    <div className="flex items-center">
+                      <span className="font-bold text-slate-400 w-24 shrink-0 uppercase tracking-wider text-[11px]">Name:</span>
+                      <span className="font-extrabold text-slate-900 text-sm">{report.patient?.name}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="font-bold text-slate-400 w-24 shrink-0 uppercase tracking-wider text-[11px]">Age / Sex:</span>
+                      <span className="font-semibold text-slate-800">{report.patient?.age} Years | {report.patient?.gender}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="font-bold text-slate-400 w-24 shrink-0 uppercase tracking-wider text-[11px]">Contact:</span>
+                      <span className="font-mono font-medium text-slate-800">{report.patient?.phone}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="font-bold text-slate-400 w-24 shrink-0 uppercase tracking-wider text-[11px]">Physician:</span>
+                      <span className="font-semibold text-teal-800 bg-teal-50 px-2.5 py-0.5 rounded-md">{report.patient?.referredBy || "Self"}</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2.5 text-[13px]">
+                    <div className="flex items-center">
+                      <span className="font-bold text-slate-400 w-28 shrink-0 uppercase tracking-wider text-[11px]">Lab ID No:</span>
+                      <span className="font-mono font-extrabold text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-100">#{report._id?.toString().substring(18).toUpperCase()}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="font-bold text-slate-400 w-28 shrink-0 uppercase tracking-wider text-[11px]">Registered:</span>
+                      <span className="font-semibold text-slate-800">{new Date(report.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="font-bold text-slate-400 w-28 shrink-0 uppercase tracking-wider text-[11px]">Reported:</span>
+                      <span className="font-semibold text-slate-800">{new Date(report.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end items-center">
+                    <img
+                      id={`qr-code-${report._id}`}
+                      src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(window.location.origin + `/reports/${patientId}`)}`}
+                      alt="Digital Report QR Code"
+                      style={{ width: "112px", height: "112px" }}
+                      crossOrigin="anonymous"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* TABLE */}
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="bg-slate-900 text-white text-[11px] font-extrabold uppercase">
+                    <th className="p-4 text-left w-1/3">Test Name</th>
+                    <th className="p-4 text-center w-1/3">Observed Value</th>
+                    <th className="p-4 text-center w-1/6">Units</th>
+                    <th className="p-4 text-center w-1/6">Reference Interval</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {report.tests.map((test, testIndex) => {
+                    const isRich = typeof test !== "string" && (test.testName || test.parameters);
+                    
+                    if (isRich) {
+                      const hasValues = test.parameters?.some(parameter => {
+                        const rObj = test.results?.find(r => r.parameterName === parameter.parameterName);
+                        return rObj && rObj.value !== undefined && rObj.value !== null && String(rObj.value).trim() !== "";
+                      });
+                      if (!hasValues) return null;
+                    } else {
+                      const resultValue = typeof test === "string" ? "" : (test.result || "");
+                      if (String(resultValue).trim() === "") return null;
+                    }
+
+                    if (!isRich) {
+                      const testName = typeof test === "string" ? test : (test.name || "Test");
+                      const resultValue = typeof test === "string" ? "" : (test.result || "");
+                      return (
+                        <tr key={testIndex} className="border-b text-sm">
+                          <td className="p-4 font-bold text-slate-800">{testName}</td>
+                          <td className="p-4 text-center font-bold text-slate-900">{resultValue || "Pending"}</td>
+                          <td className="p-4 text-center font-mono text-xs text-slate-500">-</td>
+                          <td className="p-4 text-center text-xs font-semibold text-slate-400">-</td>
+                        </tr>
+                      );
+                    }
+
+                    return (
+                      <React.Fragment key={testIndex}>
+                        <tr className="bg-teal-50/30 border-b">
+                          <td colSpan="4" className="p-4 font-extrabold text-teal-950 text-base">
+                            🧪 {test.testName}
+                          </td>
+                        </tr>
+                        {test.parameters?.map((parameter, paramIdx) => {
+                          const resultObj = test.results?.find(r => r.parameterName === parameter.parameterName);
+                          const resultValue = resultObj ? resultObj.value : "";
+                          if (resultValue === undefined || resultValue === null || String(resultValue).trim() === "") return null;
+                          const status = checkRangeStatus(report.patient, parameter, resultValue);
+                          return (
+                            <tr key={`${testIndex}-${paramIdx}`} className="border-b text-sm">
+                              <td className="p-4 pl-8 font-medium text-slate-800">{parameter.parameterName}</td>
+                              <td className="p-4 text-center font-bold text-slate-900">
+                                {resultValue} {status === "High" && " (H)"} {status === "Low" && " (L)"}
+                              </td>
+                              <td className="p-4 text-center font-mono text-xs text-slate-500">{parameter.unit || "-"}</td>
+                              <td className="p-4 text-center text-xs font-bold text-slate-600">{getNormalRange(report.patient, parameter)}</td>
+                            </tr>
+                          );
+                        })}
+                      </React.Fragment>
+                    );
+                  })}
+                </tbody>
+              </table>
+
+              {/* SIGNATURE & FOOTER */}
+              <div className="mt-12 flex justify-between items-end border-t pt-6 border-slate-100">
+                <p className="text-[10px] text-slate-400 max-w-xl">
+                  Required Tests are Conducted With the help of chemical and Analysers. The report should Only be Interpreted by medical Professionals, Who Understand reporting Units, reference range & limitation of technology. Results may vary from lab to lab and some parameters from time to time for the same patient. This report is not meant for medico legal purpose.
+                </p>
+                <div className="text-right flex flex-col items-end">
+                  <div className="h-12 w-32 flex justify-end items-center mb-1 relative overflow-hidden">
+                    <img
+                      id={`sig-img-${report._id}`}
+                      src="/signature.png"
+                      alt="Lab Technician Signature"
+                      className="max-h-full max-w-full object-contain filter contrast-125 mix-blend-multiply"
+                      crossOrigin="anonymous"
+                    />
+                  </div>
+                  <p className="font-extrabold text-slate-900 border-t pt-1.5 border-slate-200 text-sm w-40 text-center">Lab Technician.</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-10 relative">
       <style dangerouslySetInnerHTML={{ __html: `
         @media print {
           body * {
