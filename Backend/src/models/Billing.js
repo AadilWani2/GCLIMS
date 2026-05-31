@@ -6,6 +6,7 @@ const billingSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Patient",
       required: true,
+      index: true,
     },
     report: {
       type: mongoose.Schema.Types.ObjectId,

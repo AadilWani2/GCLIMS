@@ -14,26 +14,15 @@ export const getDashboardStats =
 
     const totalPatients = activePatients.length;
 
-    const totalReports = await Report.countDocuments({
-      patient: { $in: activePatientIds },
-    });
-
-    const pendingReports = await Report.countDocuments({
-      patient: { $in: activePatientIds },
-      status: "Pending",
-    });
-
-    const completedReports = await Report.countDocuments({
-      patient: { $in: activePatientIds },
-      status: "Completed",
-    });
-
-    const allRecent = await Report.find({
-      patient: { $in: activePatientIds },
-    })
-      .populate("patient")
-      .sort({ createdAt: -1 })
-      .limit(5);
+    const [totalReports, pendingReports, completedReports, allRecent] = await Promise.all([
+      Report.countDocuments({ patient: { $in: activePatientIds } }),
+      Report.countDocuments({ patient: { $in: activePatientIds }, status: "Pending" }),
+      Report.countDocuments({ patient: { $in: activePatientIds }, status: "Completed" }),
+      Report.find({ patient: { $in: activePatientIds } })
+        .populate("patient")
+        .sort({ createdAt: -1 })
+        .limit(5),
+    ]);
 
     res.json({
       totalPatients,

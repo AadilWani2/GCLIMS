@@ -1,51 +1,53 @@
 import asyncHandler from "express-async-handler";
 import Billing from "../models/Billing.js";
 import Report from "../models/Report.js";
+import Patient from "../models/Patient.js";
 
 // @desc    Get all bills (with lazy generation of missing bills)
 // @route   GET /api/billing
 // @access  Private
 export const getAllBills = asyncHandler(async (req, res) => {
-  // 1. Fetch all reports populated with patients
-  const reports = await Report.find().populate("patient");
-  
-  // 2. Filter only active reports (patient exists and is not deleted)
-  const activeReports = reports.filter(
-    (r) => r.patient && r.patient.isDeleted !== true
-  );
+  // 1. Fetch active patient IDs
+  const activePatients = await Patient.find({ isDeleted: false }, { _id: 1 });
+  const activePatientIds = activePatients.map((p) => p._id);
 
-  // 3. For any active report that doesn't have a bill, generate one lazily
-  for (const report of activeReports) {
-    const billExists = await Billing.findOne({ report: report._id });
-    if (!billExists) {
+  // 2. Fetch all reports for active patients
+  const activeReports = await Report.find({ patient: { $in: activePatientIds } });
+
+  // 3. Find all existing Billing records for these active reports in a single query
+  const activeReportIds = activeReports.map((r) => r._id);
+  const existingBills = await Billing.find({ report: { $in: activeReportIds } }, { report: 1 });
+  const existingReportIdsSet = new Set(existingBills.map((b) => b.report.toString()));
+
+  // 4. Identify reports that lack a bill in memory using the fast Set
+  const missingReports = activeReports.filter((r) => !existingReportIdsSet.has(r._id.toString()));
+
+  // 5. Generate missing bills in a single bulk insertion command
+  if (missingReports.length > 0) {
+    const newBillsData = missingReports.map((report) => {
       const totalAmount = report.tests.reduce(
         (sum, test) => sum + (Number(test.price) || 0),
         0
       );
-
-      await Billing.create({
-        patient: report.patient._id,
+      return {
+        patient: report.patient,
         report: report._id,
         totalAmount,
         balanceDue: totalAmount,
         status: "Unpaid",
         paymentMode: "None",
-      });
-    }
+      };
+    });
+    await Billing.insertMany(newBillsData);
   }
 
-  // 4. Fetch all bills populated with patient and report
-  const bills = await Billing.find()
+  // 6. Fetch only the active bills populated with patient and report
+  const bills = await Billing.find({ patient: { $in: activePatientIds } })
     .populate("patient")
     .populate("report")
     .sort({ createdAt: -1 });
 
-  // Filter bills to exclude those with deleted patients
-  const activeBills = bills.filter(
-    (b) => b.patient && b.patient.isDeleted !== true
-  );
-
-  res.json(activeBills);
+  res.json(bills);
 });
 
 // @desc    Update a billing record (record payment / discount)
@@ -92,12 +94,10 @@ export const updateBill = asyncHandler(async (req, res) => {
 // @route   GET /api/billing/stats
 // @access  Private
 export const getBillingStats = asyncHandler(async (req, res) => {
-  const bills = await Billing.find().populate("patient");
+  const activePatients = await Patient.find({ isDeleted: false }, { _id: 1 });
+  const activePatientIds = activePatients.map((p) => p._id);
 
-  // Filter out bills with deleted patients
-  const activeBills = bills.filter(
-    (b) => b.patient && b.patient.isDeleted !== true
-  );
+  const activeBills = await Billing.find({ patient: { $in: activePatientIds } });
 
   let totalBilled = 0;
   let totalCollected = 0;

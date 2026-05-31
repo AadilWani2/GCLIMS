@@ -2,19 +2,20 @@ import asyncHandler from "express-async-handler";
 
 import Report from "../models/Report.js";
 import Billing from "../models/Billing.js";
+import Patient from "../models/Patient.js";
 
 export const getAllReports =
   asyncHandler(async (req, res) => {
-    const reports = await Report.find({})
+    // 1. Fetch active patient IDs
+    const activePatients = await Patient.find({ isDeleted: false }, { _id: 1 });
+    const activePatientIds = activePatients.map((p) => p._id);
+
+    // 2. Fetch only reports of active patients directly using the index
+    const activeReports = await Report.find({ patient: { $in: activePatientIds } })
       .populate("patient")
       .sort({ createdAt: -1 });
 
-    // Filter out reports whose patient has been deleted
-    const active = reports.filter(
-      (r) => r.patient && !r.patient.isDeleted
-    );
-
-    res.json(active);
+    res.json(activeReports);
   });
 
 export const getPatientReports =
