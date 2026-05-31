@@ -803,35 +803,10 @@ const ReportsPage = () => {
     pdf.save(`${patientName.replace(/\s+/g, "_")}_Laboratory_Report.pdf`);
   };
 
-  const shareWhatsApp = async (phone, patientId, patientName = "Valued Patient", index) => {
-    const pdf = generatePDF(index);
-    if (!pdf) {
-      alert("Failed to generate PDF for sharing.");
-      return;
-    }
-
-    const pdfBlob = pdf.output("blob");
-    const fileName = `${patientName.replace(/\s+/g, "_")}_Laboratory_Report.pdf`;
-    const pdfFile = new File([pdfBlob], fileName, { type: "application/pdf" });
-
-    // Try using Web Share API if supported (native file attachments on mobile / modern desktop)
-    if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
-      try {
-        await navigator.share({
-          files: [pdfFile],
-          title: `${patientName} Laboratory Report`,
-          text: `Please find the clinical laboratory report for ${patientName} from Gousia Diagnostics.`,
-        });
-        return;
-      } catch (err) {
-        console.log("Web Share failed, falling back: ", err);
-      }
-    }
-
-    // Fallback: WhatsApp Web link sharing
+  const shareWhatsApp = (phone, patientId, patientName = "Valued Patient") => {
     const reportLink = `${window.location.origin}/reports/${patientId}`;
     const message = encodeURIComponent(
-      `Hello ${patientName},\n\nYour clinical laboratory report from *Gousia Diagnostics* is ready.\n\nYou can view and download your complete PDF report directly by clicking the link below:\n👉 ${reportLink}\n\nThank you for choosing Gousia Diagnostics.\nAccurate Results, Better Health. 🔬`
+      `Hello ${patientName},\n\nYour clinical laboratory report from *Gousia Diagnostics* is ready.\n\nClick to view and download your PDF report:\n👉 ${reportLink}`
     );
 
     window.open(
@@ -1333,7 +1308,7 @@ const ReportsPage = () => {
                   </button>
 
                   <button
-                    onClick={() => shareWhatsApp(report.patient.phone, report.patient?._id, report.patient?.name, reportIndex)}
+                    onClick={() => shareWhatsApp(report.patient.phone, report.patient?._id, report.patient?.name)}
                     className="bg-emerald-500 text-white px-5 py-3 rounded-xl hover:bg-emerald-600 transition font-semibold shadow-md shadow-emerald-500/10 w-full sm:w-auto text-center"
                   >
                     WhatsApp
