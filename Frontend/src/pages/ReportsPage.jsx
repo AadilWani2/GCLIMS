@@ -243,14 +243,17 @@ const ReportsPage = () => {
         result: value,
       };
     } else if (parameterName) {
-      const updatedResults = currentTest.results?.map((r) => {
-        if (r.parameterName !== parameterName) return r;
-        return { ...r, value };
-      }) || [];
+      let results = currentTest.results ? [...currentTest.results] : [];
+      const index = results.findIndex((r) => r.parameterName === parameterName);
+      if (index > -1) {
+        results[index] = { ...results[index], value };
+      } else {
+        results.push({ parameterName, value });
+      }
 
       updatedReports[reportIndex].tests[testIndex] = {
         ...currentTest,
-        results: updatedResults,
+        results,
       };
     } else {
       updatedReports[reportIndex].tests[testIndex] = {
@@ -258,6 +261,88 @@ const ReportsPage = () => {
         result: value,
       };
     }
+
+    setReports(updatedReports);
+  };
+
+  const addCustomParameter = (reportIndex, testIndex) => {
+    const paramName = prompt("Enter the name of the custom parameter to add:");
+    if (!paramName || !paramName.trim()) return;
+
+    const cleanParamName = paramName.trim();
+    const updatedReports = [...reports];
+    const report = updatedReports[reportIndex];
+    const test = report.tests[testIndex];
+
+    const parameters = test.parameters ? [...test.parameters] : [];
+    if (parameters.some((p) => p.parameterName.toLowerCase() === cleanParamName.toLowerCase())) {
+      alert("Parameter already exists.");
+      return;
+    }
+
+    const unit = prompt(`Enter unit for "${cleanParamName}" (optional, e.g. g/dL, mg/dL):`) || "";
+    const normalRange = prompt(`Enter reference range for "${cleanParamName}" (optional, e.g. 12-16, 0.6-1.2):`) || "";
+
+    const newParam = {
+      parameterName: cleanParamName,
+      unit,
+      normalRangeMale: normalRange,
+      normalRangeFemale: normalRange,
+      normalRangeChild: normalRange,
+    };
+
+    const results = test.results ? [...test.results] : [];
+    results.push({
+      parameterName: cleanParamName,
+      value: "",
+    });
+
+    updatedReports[reportIndex].tests[testIndex] = {
+      ...test,
+      parameters: [...parameters, newParam],
+      results,
+    };
+
+    setReports(updatedReports);
+  };
+
+  const convertToRichAndAddParameter = (reportIndex, testIndex) => {
+    const paramName = prompt("Enter name of first custom parameter:");
+    if (!paramName || !paramName.trim()) return;
+
+    const cleanParamName = paramName.trim();
+    const updatedReports = [...reports];
+    const report = updatedReports[reportIndex];
+    const test = report.tests[testIndex];
+
+    const testName = typeof test === "string" ? test : (test.name || test.testName || "Test");
+    const testPrice = typeof test === "string" ? 0 : (test.price || 0);
+    const existingResultValue = typeof test === "string" ? "" : (test.result || "");
+
+    const unit = prompt(`Enter unit for "${cleanParamName}" (optional, e.g. g/dL):`) || "";
+    const normalRange = prompt(`Enter reference range for "${cleanParamName}" (optional, e.g. 12-16):`) || "";
+
+    const newParam = {
+      parameterName: cleanParamName,
+      unit,
+      normalRangeMale: normalRange,
+      normalRangeFemale: normalRange,
+      normalRangeChild: normalRange,
+    };
+
+    updatedReports[reportIndex].tests[testIndex] = {
+      testName,
+      price: testPrice,
+      category: "BIOCHEMISTRY",
+      specimen: "Blood",
+      parameters: [newParam],
+      results: [
+        {
+          parameterName: cleanParamName,
+          value: existingResultValue,
+        }
+      ]
+    };
 
     setReports(updatedReports);
   };
@@ -1308,7 +1393,18 @@ const ReportsPage = () => {
                       return (
                         <tr key={testIndex} className="border-b text-sm text-gray-700 hover:bg-slate-50/50 transition-colors duration-150">
                           <td className="p-4.5 font-bold text-slate-800">
-                            {testName}
+                            <div className="flex items-center gap-2">
+                              {testName}
+                              {isEditing && (
+                                <button
+                                  type="button"
+                                  onClick={() => convertToRichAndAddParameter(reportIndex, testIndex)}
+                                  className="bg-teal-50 hover:bg-teal-100 text-teal-700 px-2 py-0.5 rounded text-[10px] font-bold transition border border-teal-200 cursor-pointer"
+                                >
+                                  ➕ Convert to Parameters
+                                </button>
+                              )}
+                            </div>
                           </td>
                           <td className="p-4.5 text-center">
                             {isEditing ? (
@@ -1375,7 +1471,16 @@ const ReportsPage = () => {
                                   </span>
                                 </span>
                                 {/* Price Edit Area */}
-                                <div className="flex items-center gap-2 pr-4">
+                                <div className="flex items-center gap-4 pr-4">
+                                  {isEditing && (
+                                    <button
+                                      type="button"
+                                      onClick={() => addCustomParameter(reportIndex, testIndex)}
+                                      className="bg-teal-50 hover:bg-teal-100 text-teal-700 px-2 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1 border border-teal-200 cursor-pointer"
+                                    >
+                                      ➕ Add Parameter
+                                    </button>
+                                  )}
                                   <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Price:</span>
                                   {isEditing ? (
                                     <div className="flex items-center gap-1">
