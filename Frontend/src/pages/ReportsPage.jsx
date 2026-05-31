@@ -1275,15 +1275,10 @@ const ReportsPage = () => {
               </div>
             </div>
 
-            {/* PATIENT INFO BOX WITH CENTERED "REPORT" BADGE */}
             <div 
               className="relative p-6 rounded-2xl bg-gradient-to-br from-slate-50 via-white to-teal-50/10 border border-slate-200/80 mt-8 mb-8 shadow-md shadow-slate-100/50 flex flex-col gap-4 overflow-hidden"
               style={{ borderLeft: "5px solid #0D9488" }}
             >
-              {/* Centered "Report" badge resting exactly on the top border line */}
-              <div className="absolute -top-3 left-8 bg-teal-50 text-teal-700 rounded-full px-4 py-0.5 text-[9.5px] font-black tracking-widest uppercase shadow-sm border border-teal-200">
-                Patient Diagnostic File
-              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
                 {/* Column 1 - Perfectly aligned values */}
