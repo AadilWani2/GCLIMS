@@ -137,7 +137,10 @@ const ReportsPage = () => {
     }
   };
 
+  const isStaff = !!localStorage.getItem("userInfo");
+
   const fetchTests = async () => {
+    if (!isStaff) return;
     try {
       const userInfo = JSON.parse(localStorage.getItem("userInfo"));
       const config = {
@@ -154,8 +157,20 @@ const ReportsPage = () => {
 
   useEffect(() => {
     fetchReports();
-    fetchTests();
+    if (isStaff) {
+      fetchTests();
+    }
   }, []);
+
+  // Auto-download secure report PDF for patient viewports
+  useEffect(() => {
+    if (!isStaff && reports.length > 0) {
+      const timer = setTimeout(() => {
+        downloadPDF(0, reports[0].patient?.name || "Patient");
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [reports]);
 
   const appendSelectedTests = () => {
     if (newSelectedTests.length === 0) return;
@@ -816,7 +831,59 @@ const ReportsPage = () => {
   };
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-10 relative">
+      {/* Patient Mode Full-Page Overlay */}
+      {!isStaff && (
+        <div className="fixed inset-0 z-50 bg-slate-50 flex flex-col items-center justify-center p-6 text-center font-inter">
+          <div className="max-w-md w-full bg-white rounded-3xl border border-slate-150 p-8 shadow-xl shadow-slate-200/50 flex flex-col items-center gap-6">
+            {/* Brand Logo with Pulsing Ring */}
+            <div className="relative flex items-center justify-center">
+              <div className="w-16 h-16 rounded-2xl bg-teal-50 border border-teal-150 flex items-center justify-center text-teal-600 shadow-sm animate-pulse">
+                <span className="text-2xl font-black font-outfit">GD</span>
+              </div>
+              <div className="absolute inset-0 rounded-2xl border-2 border-teal-500 border-t-transparent animate-spin w-16 h-16"></div>
+            </div>
+
+            <div>
+              <h2 className="font-black font-outfit text-slate-800 text-lg leading-snug">Gousia Diagnostics</h2>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Secure Report Portal</p>
+            </div>
+
+            {reports.length === 0 ? (
+              <div className="space-y-2">
+                <div className="w-24 h-2 bg-slate-100 rounded-full mx-auto animate-pulse"></div>
+                <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Loading secure laboratory records...</p>
+              </div>
+            ) : (
+              <div className="space-y-4 w-full">
+                <div className="bg-emerald-50/50 border border-emerald-100 p-4 rounded-2xl">
+                  <p className="text-xs text-emerald-700 font-bold leading-relaxed">
+                    ✓ Your laboratory report is ready!
+                  </p>
+                  <p className="text-[11px] text-slate-500 mt-1">
+                    The PDF has been generated and is downloading to your device automatically.
+                  </p>
+                </div>
+
+                <div className="space-y-2.5">
+                  <p className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">Patient: {reports[0].patient?.name}</p>
+                  <button
+                    onClick={() => downloadPDF(0, reports[0].patient?.name || "Patient")}
+                    className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-teal-600 hover:bg-teal-700 text-white transition font-bold text-xs shadow-md shadow-teal-600/10 cursor-pointer"
+                  >
+                    📥 Click to Download PDF Manually
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Clinical Footer */}
+            <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider border-t pt-4 border-slate-100 w-full mt-2">
+              Accurate Results, Better Health 🔬
+            </div>
+          </div>
+        </div>
+      )}
       <style dangerouslySetInnerHTML={{ __html: `
         @media print {
           body * {
