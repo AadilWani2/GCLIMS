@@ -347,6 +347,37 @@ const ReportsPage = () => {
     setReports(updatedReports);
   };
 
+  const updateParameterMetadata = (
+    reportIndex,
+    testIndex,
+    parameterName,
+    field,
+    value
+  ) => {
+    const updatedReports = [...reports];
+    const test = updatedReports[reportIndex].tests[testIndex];
+
+    if (test && test.parameters) {
+      test.parameters = test.parameters.map((p) => {
+        if (p.parameterName !== parameterName) return p;
+
+        if (field === "unit") {
+          return { ...p, unit: value };
+        } else if (field === "range") {
+          return {
+            ...p,
+            normalRangeMale: value,
+            normalRangeFemale: value,
+            normalRangeChild: value,
+          };
+        }
+        return p;
+      });
+    }
+
+    setReports(updatedReports);
+  };
+
   const getNormalRange = (patient, parameter) => {
     const ageVal = parseInt(patient.age, 10);
     if (!isNaN(ageVal) && ageVal < 12 && parameter.normalRangeChild) {
@@ -1564,12 +1595,48 @@ const ReportsPage = () => {
                                 )}
                               </td>
 
-                              <td className="p-4 text-center font-mono text-xs text-slate-500">
-                                {parameter.unit || "-"}
+                              <td className="p-4 text-center">
+                                {isEditing ? (
+                                  <input
+                                    type="text"
+                                    placeholder="Unit (e.g. g/dL)"
+                                    value={parameter.unit || ""}
+                                    onChange={(e) =>
+                                      updateParameterMetadata(
+                                        reportIndex,
+                                        testIndex,
+                                        parameter.parameterName,
+                                        "unit",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="border border-slate-200 p-1.5 rounded-xl w-24 outline-none focus:border-teal-500 text-center text-xs bg-white"
+                                  />
+                                ) : (
+                                  <span className="font-mono text-xs text-slate-500">{parameter.unit || "-"}</span>
+                                )}
                               </td>
 
-                              <td className="p-4 text-center text-xs font-bold text-slate-600">
-                                {getNormalRange(report.patient, parameter)}
+                              <td className="p-4 text-center">
+                                {isEditing ? (
+                                  <input
+                                    type="text"
+                                    placeholder="Range (e.g. 12-16)"
+                                    value={parameter.normalRangeMale || ""}
+                                    onChange={(e) =>
+                                      updateParameterMetadata(
+                                        reportIndex,
+                                        testIndex,
+                                        parameter.parameterName,
+                                        "range",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="border border-slate-200 p-1.5 rounded-xl w-28 outline-none focus:border-teal-500 text-center text-xs font-bold bg-white text-slate-600"
+                                  />
+                                ) : (
+                                  <span className="text-xs font-bold text-slate-600">{getNormalRange(report.patient, parameter)}</span>
+                                )}
                               </td>
                             </tr>
                           );
