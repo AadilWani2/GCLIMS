@@ -139,7 +139,20 @@ const ReportsPage = () => {
     }
   };
 
-  const isStaff = !!localStorage.getItem("userInfo");
+  const isStaff = (() => {
+    try {
+      const userInfoStr = localStorage.getItem("userInfo");
+      if (!userInfoStr) return false;
+      const userInfo = JSON.parse(userInfoStr);
+      const email = userInfo?.user?.email || userInfo?.email;
+      const token = userInfo?.token;
+      
+      const allowedEmails = ["waniaadil211@gmail.com", "waniesrar2@gmail.com"];
+      return !!token && !!email && allowedEmails.includes(email.toLowerCase().trim());
+    } catch (e) {
+      return false;
+    }
+  })();
 
   const fetchTests = async () => {
     if (!isStaff) return;
