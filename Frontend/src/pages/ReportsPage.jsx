@@ -116,15 +116,15 @@ const ReportsPage = () => {
 
   const fetchReports = async () => {
     try {
-      const userInfo = JSON.parse(
-        localStorage.getItem("userInfo")
-      );
+      const userInfoStr = localStorage.getItem("userInfo");
+      const userInfo = userInfoStr ? JSON.parse(userInfoStr) : null;
 
-      const config = {
-        headers: {
+      const config = {};
+      if (userInfo?.token) {
+        config.headers = {
           Authorization: `Bearer ${userInfo.token}`,
-        },
-      };
+        };
+      }
 
       const { data } = await api.get(
         `/reports/${patientId}`,

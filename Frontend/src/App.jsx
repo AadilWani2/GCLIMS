@@ -17,6 +17,8 @@ function App() {
     <Routes>
       <Route path="/" element={<LoginPage />} />
 
+      <Route path="/reports/:patientId" element={<ReportsPage />} />
+
       <Route element={<ProtectedRoute />}>
         <Route element={<DashboardLayout />}>
           <Route
@@ -32,11 +34,6 @@ function App() {
           <Route
             path="/reports"
             element={<ReportsHistoryPage />}
-          />
-
-          <Route
-            path="/reports/:patientId"
-            element={<ReportsPage />}
           />
 
           <Route
