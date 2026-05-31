@@ -803,9 +803,11 @@ const ReportsPage = () => {
     pdf.save(`${patientName.replace(/\s+/g, "_")}_Laboratory_Report.pdf`);
   };
 
-  const shareWhatsApp = (phone) => {
-    const message =
-      "Your laboratory report is ready.";
+  const shareWhatsApp = (phone, patientId, patientName = "Valued Patient") => {
+    const reportLink = `${window.location.origin}/reports/${patientId}`;
+    const message = encodeURIComponent(
+      `Hello ${patientName},\n\nYour clinical laboratory report from *Gousia Diagnostics* is ready.\n\nYou can view and download your complete PDF report directly by clicking the link below:\n👉 ${reportLink}\n\nThank you for choosing Gousia Diagnostics.\nAccurate Results, Better Health. 🔬`
+    );
 
     window.open(
       `https://wa.me/91${phone}?text=${message}`,
@@ -1306,7 +1308,7 @@ const ReportsPage = () => {
                   </button>
 
                   <button
-                    onClick={() => shareWhatsApp(report.patient.phone)}
+                    onClick={() => shareWhatsApp(report.patient.phone, report.patient?._id, report.patient?.name)}
                     className="bg-emerald-500 text-white px-5 py-3 rounded-xl hover:bg-emerald-600 transition font-semibold shadow-md shadow-emerald-500/10 w-full sm:w-auto text-center"
                   >
                     WhatsApp

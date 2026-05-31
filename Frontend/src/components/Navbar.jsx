@@ -13,13 +13,17 @@ const Navbar = ({ onToggleSidebar }) => {
     navigate("/");
   };
 
-  const userInitial = userInfo?.email 
-    ? userInfo.email.charAt(0).toUpperCase() 
-    : userInfo?.name 
-      ? userInfo.name.charAt(0).toUpperCase() 
+  const userEmail = userInfo?.user?.email;
+  const userDisplayName = userInfo?.user?.name;
+  const userPicture = userInfo?.user?.picture;
+
+  const userInitial = userEmail 
+    ? userEmail.charAt(0).toUpperCase() 
+    : userDisplayName 
+      ? userDisplayName.charAt(0).toUpperCase() 
       : "U";
   
-  const userName = userInfo?.email || userInfo?.name || "Clinical Staff";
+  const userName = userEmail || userDisplayName || "Clinical Staff";
 
   return (
     <div className="bg-white border-b border-slate-200/80 px-4 lg:px-8 py-3.5 flex justify-between items-center sticky top-0 z-40 font-inter">
@@ -55,9 +59,9 @@ const Navbar = ({ onToggleSidebar }) => {
 
         {/* User profile capsule */}
         <div className="flex items-center gap-3 border-l border-slate-150 pl-5">
-          {userInfo?.picture ? (
+          {userPicture ? (
             <img
-              src={userInfo.picture}
+              src={userPicture}
               alt={userName}
               className="w-8 h-8 rounded-lg object-cover border border-slate-100 shadow-sm"
             />
