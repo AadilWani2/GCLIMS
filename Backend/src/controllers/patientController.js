@@ -18,7 +18,7 @@ export const createEntry =
 
     let patient = await Patient.findOne({
       phone,
-      isDeleted: false,
+      isDeleted: { $ne: true },
     });
 
     if (!patient) {
@@ -61,7 +61,7 @@ export const getPatients =
   asyncHandler(async (req, res) => {
     const patients =
       await Patient.find({
-        isDeleted: false,
+        isDeleted: { $ne: true },
       }).sort({
         createdAt: -1,
       });

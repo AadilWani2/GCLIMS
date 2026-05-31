@@ -7,7 +7,7 @@ import Patient from "../models/Patient.js";
 export const getAllReports =
   asyncHandler(async (req, res) => {
     // 1. Fetch active patient IDs
-    const activePatients = await Patient.find({ isDeleted: false }, { _id: 1 });
+    const activePatients = await Patient.find({ isDeleted: { $ne: true } }, { _id: 1 });
     const activePatientIds = activePatients.map((p) => p._id);
 
     // 2. Fetch only reports of active patients directly using the index

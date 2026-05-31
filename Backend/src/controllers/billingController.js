@@ -8,7 +8,7 @@ import Patient from "../models/Patient.js";
 // @access  Private
 export const getAllBills = asyncHandler(async (req, res) => {
   // 1. Fetch active patient IDs
-  const activePatients = await Patient.find({ isDeleted: false }, { _id: 1 });
+  const activePatients = await Patient.find({ isDeleted: { $ne: true } }, { _id: 1 });
   const activePatientIds = activePatients.map((p) => p._id);
 
   // 2. Fetch all reports for active patients
@@ -94,7 +94,7 @@ export const updateBill = asyncHandler(async (req, res) => {
 // @route   GET /api/billing/stats
 // @access  Private
 export const getBillingStats = asyncHandler(async (req, res) => {
-  const activePatients = await Patient.find({ isDeleted: false }, { _id: 1 });
+  const activePatients = await Patient.find({ isDeleted: { $ne: true } }, { _id: 1 });
   const activePatientIds = activePatients.map((p) => p._id);
 
   const activeBills = await Billing.find({ patient: { $in: activePatientIds } });

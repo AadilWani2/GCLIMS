@@ -13,13 +13,13 @@ const Navbar = ({ onToggleSidebar }) => {
     navigate("/");
   };
 
-  const userInitial = userInfo?.name 
-    ? userInfo.name.charAt(0).toUpperCase() 
-    : userInfo?.email 
-      ? userInfo.email.charAt(0).toUpperCase() 
+  const userInitial = userInfo?.email 
+    ? userInfo.email.charAt(0).toUpperCase() 
+    : userInfo?.name 
+      ? userInfo.name.charAt(0).toUpperCase() 
       : "U";
   
-  const userName = userInfo?.name || userInfo?.email || "Clinical Staff";
+  const userName = userInfo?.email || userInfo?.name || "Clinical Staff";
 
   return (
     <div className="bg-white border-b border-slate-200/80 px-4 lg:px-8 py-3.5 flex justify-between items-center sticky top-0 z-40 font-inter">

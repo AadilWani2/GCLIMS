@@ -7,7 +7,7 @@ export const getDashboardStats =
   asyncHandler(async (req, res) => {
     // Get IDs of all active (non-deleted) patients
     const activePatients = await Patient.find(
-      { isDeleted: false },
+      { isDeleted: { $ne: true } },
       { _id: 1 }
     );
     const activePatientIds = activePatients.map((p) => p._id);
