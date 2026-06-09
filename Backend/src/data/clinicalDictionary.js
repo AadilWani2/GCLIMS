@@ -125,6 +125,46 @@ const dictionary = {
   ],
   stain: [
     { parameterName: "Stain Result Report", unit: "text", normalRangeMale: "Negative / Descriptive", normalRangeFemale: "Negative / Descriptive" }
+  ],
+  cbc3part: [
+    { parameterName: "Hemoglobin", unit: "g/dL", normalRangeMale: "13.0-17.0", normalRangeFemale: "12.0-15.0", normalRangeChild: "11.0-14.0" },
+    { parameterName: "Total Leukocyte Count (TLC)", unit: "/cmm", normalRangeMale: "4000-11000", normalRangeFemale: "4000-11000", normalRangeChild: "5000-13000" },
+    { parameterName: "Platelet Count", unit: "Lakhs/cmm", normalRangeMale: "1.50-4.50", normalRangeFemale: "1.50-4.50", normalRangeChild: "1.50-4.50" },
+    { parameterName: "Red Blood Cell Count (RBC)", unit: "million/cmm", normalRangeMale: "4.5-5.5", normalRangeFemale: "3.8-4.8", normalRangeChild: "4.0-5.2" },
+    { parameterName: "Packed Cell Volume (PCV)", unit: "%", normalRangeMale: "40-50", normalRangeFemale: "36-46", normalRangeChild: "32-42" },
+    { parameterName: "Mean Corpuscular Volume (MCV)", unit: "fL", normalRangeMale: "80-100", normalRangeFemale: "80-100", normalRangeChild: "75-90" },
+    { parameterName: "Mean Corpuscular Hemoglobin (MCH)", unit: "pg", normalRangeMale: "27-32", normalRangeFemale: "27-32", normalRangeChild: "25-31" },
+    { parameterName: "Mean Corpuscular Hemoglobin Conc (MCHC)", unit: "g/dL", normalRangeMale: "32-36", normalRangeFemale: "32-36", normalRangeChild: "32-36" },
+    { parameterName: "Red Cell Distribution Width (RDW-CV)", unit: "%", normalRangeMale: "11.5-14.5", normalRangeFemale: "11.5-14.5", normalRangeChild: "11.5-14.5" },
+    { parameterName: "Granulocytes (GRA%)", unit: "%", normalRangeMale: "50.0-70.0", normalRangeFemale: "50.0-70.0", normalRangeChild: "30.0-60.0" },
+    { parameterName: "Granulocytes (GRA#)", unit: "/cmm", normalRangeMale: "2000-7000", normalRangeFemale: "2000-7000", normalRangeChild: "2000-7000" },
+    { parameterName: "Lymphocytes (LYM%)", unit: "%", normalRangeMale: "20.0-40.0", normalRangeFemale: "20.0-40.0", normalRangeChild: "40.0-70.0" },
+    { parameterName: "Lymphocytes (LYM#)", unit: "/cmm", normalRangeMale: "1000-4000", normalRangeFemale: "1000-4000", normalRangeChild: "1500-8000" },
+    { parameterName: "Mid Cells (MID%)", unit: "%", normalRangeMale: "2.0-10.0", normalRangeFemale: "2.0-10.0", normalRangeChild: "2.0-10.0" },
+    { parameterName: "Mid Cells (MID#)", unit: "/cmm", normalRangeMale: "100-1000", normalRangeFemale: "100-1000", normalRangeChild: "100-1000" },
+    { parameterName: "Mean Platelet Volume (MPV)", unit: "fL", normalRangeMale: "7.5-11.5", normalRangeFemale: "7.5-11.5", normalRangeChild: "7.5-11.5" }
+  ],
+  cbc5part: [
+    { parameterName: "Hemoglobin", unit: "g/dL", normalRangeMale: "13.0-17.0", normalRangeFemale: "12.0-15.0", normalRangeChild: "11.0-14.0" },
+    { parameterName: "Total Leukocyte Count (TLC)", unit: "/cmm", normalRangeMale: "4000-11000", normalRangeFemale: "4000-11000", normalRangeChild: "5000-13000" },
+    { parameterName: "Platelet Count", unit: "Lakhs/cmm", normalRangeMale: "1.50-4.50", normalRangeFemale: "1.50-4.50", normalRangeChild: "1.50-4.50" },
+    { parameterName: "Red Blood Cell Count (RBC)", unit: "million/cmm", normalRangeMale: "4.5-5.5", normalRangeFemale: "3.8-4.8", normalRangeChild: "4.0-5.2" },
+    { parameterName: "Packed Cell Volume (PCV)", unit: "%", normalRangeMale: "40-50", normalRangeFemale: "36-46", normalRangeChild: "32-42" },
+    { parameterName: "Mean Corpuscular Volume (MCV)", unit: "fL", normalRangeMale: "80-100", normalRangeFemale: "80-100", normalRangeChild: "75-90" },
+    { parameterName: "Mean Corpuscular Hemoglobin (MCH)", unit: "pg", normalRangeMale: "27-32", normalRangeFemale: "27-32", normalRangeChild: "25-31" },
+    { parameterName: "Mean Corpuscular Hemoglobin Conc (MCHC)", unit: "g/dL", normalRangeMale: "32-36", normalRangeFemale: "32-36", normalRangeChild: "32-36" },
+    { parameterName: "Red Cell Distribution Width (RDW-CV)", unit: "%", normalRangeMale: "11.5-14.5", normalRangeFemale: "11.5-14.5", normalRangeChild: "11.5-14.5" },
+    { parameterName: "Neutrophils (NEUT%)", unit: "%", normalRangeMale: "40.0-80.0", normalRangeFemale: "40.0-80.0", normalRangeChild: "30.0-60.0" },
+    { parameterName: "Neutrophils (NEUT#)", unit: "/cmm", normalRangeMale: "2000-7000", normalRangeFemale: "2000-7000", normalRangeChild: "2000-7000" },
+    { parameterName: "Lymphocytes (LYM%)", unit: "%", normalRangeMale: "20.0-40.0", normalRangeFemale: "20.0-40.0", normalRangeChild: "40.0-70.0" },
+    { parameterName: "Lymphocytes (LYM#)", unit: "/cmm", normalRangeMale: "1000-4000", normalRangeFemale: "1000-4000", normalRangeChild: "1500-8000" },
+    { parameterName: "Monocytes (MONO%)", unit: "%", normalRangeMale: "2.0-10.0", normalRangeFemale: "2.0-10.0", normalRangeChild: "2.0-10.0" },
+    { parameterName: "Monocytes (MONO#)", unit: "/cmm", normalRangeMale: "100-800", normalRangeFemale: "100-800", normalRangeChild: "100-800" },
+    { parameterName: "Eosinophils (EOS%)", unit: "%", normalRangeMale: "1.0-6.0", normalRangeFemale: "1.0-6.0", normalRangeChild: "1.0-6.0" },
+    { parameterName: "Eosinophils (EOS#)", unit: "/cmm", normalRangeMale: "20-500", normalRangeFemale: "20-500", normalRangeChild: "20-500" },
+    { parameterName: "Basophils (BASO%)", unit: "%", normalRangeMale: "0.0-2.0", normalRangeFemale: "0.0-2.0", normalRangeChild: "0.0-2.0" },
+    { parameterName: "Basophils (BASO#)", unit: "/cmm", normalRangeMale: "0-100", normalRangeFemale: "0-100", normalRangeChild: "0-100" },
+    { parameterName: "Mean Platelet Volume (MPV)", unit: "fL", normalRangeMale: "7.5-11.5", normalRangeFemale: "7.5-11.5", normalRangeChild: "7.5-11.5" }
   ]
 };
 
@@ -231,6 +271,12 @@ export const getClinicalParameters = (testName, category) => {
   const cleanCat = (category || "").trim().toLowerCase();
 
   // 1. Panel Matches via cleanName matching key profiles
+  if ((cleanName.includes("cbc") || cleanName.includes("blood count")) && (cleanName.includes("3-part") || cleanName.includes("3 part") || cleanName.includes("3pot") || cleanName.includes("3 pot"))) {
+    return dictionary.cbc3part;
+  }
+  if ((cleanName.includes("cbc") || cleanName.includes("blood count")) && (cleanName.includes("5-part") || cleanName.includes("5 part") || cleanName.includes("5pot") || cleanName.includes("5 pot"))) {
+    return dictionary.cbc5part;
+  }
   if (cleanName === "cbc" || cleanName.includes("complete blood count") || cleanName.startsWith("cbc ")) {
     return dictionary.cbc;
   }

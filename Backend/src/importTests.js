@@ -101,6 +101,29 @@ const importTests = async () => {
 
     const tests = Object.values(groupedTests);
 
+    // Ensure CBC 3-Part and CBC 5-Part are present
+    const cbc3PartExists = tests.some(t => t.testName.toLowerCase().includes("3-part") || t.testName.toLowerCase().includes("3 part") || t.testName.toLowerCase().includes("3pot") || t.testName.toLowerCase().includes("3 pot"));
+    if (!cbc3PartExists) {
+      tests.push({
+        testName: "CBC 3-Part",
+        category: "Hematology",
+        specimen: "Whole Blood",
+        price: 350,
+        parameters: getClinicalParameters("CBC 3-Part", "Hematology")
+      });
+    }
+
+    const cbc5PartExists = tests.some(t => t.testName.toLowerCase().includes("5-part") || t.testName.toLowerCase().includes("5 part") || t.testName.toLowerCase().includes("5pot") || t.testName.toLowerCase().includes("5 pot"));
+    if (!cbc5PartExists) {
+      tests.push({
+        testName: "CBC 5-Part",
+        category: "Hematology",
+        specimen: "Whole Blood",
+        price: 450,
+        parameters: getClinicalParameters("CBC 5-Part", "Hematology")
+      });
+    }
+
     console.log(`Inserting ${tests.length} real-world medical-grade tests into MongoDB...`);
     await Test.insertMany(tests);
 
