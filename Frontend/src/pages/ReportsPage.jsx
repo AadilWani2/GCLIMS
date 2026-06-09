@@ -228,6 +228,94 @@ const ReportsPage = () => {
     setAddTestSearch("");
   };
 
+  const runCalculations = (results) => {
+    if (!results || !Array.isArray(results)) return results;
+
+    const getVal = (nameRegex) => {
+      const res = results.find((r) => nameRegex.test(r.parameterName));
+      if (!res || res.value === undefined || res.value === null || String(res.value).trim() === "") return NaN;
+      const val = parseFloat(res.value);
+      return isNaN(val) ? NaN : val;
+    };
+
+    const setVal = (nameRegex, value) => {
+      const idx = results.findIndex((r) => nameRegex.test(r.parameterName));
+      if (idx > -1) {
+        results[idx] = { ...results[idx], value: String(Math.round(value * 100) / 100) };
+      }
+    };
+
+    // 1. Bilirubin calculations: Total = Direct + Indirect
+    const bilTotal = getVal(/bilirubin.*total|total.*bilirubin/i);
+    const bilDirect = getVal(/bilirubin.*direct|direct.*bilirubin/i);
+    const bilIndirect = getVal(/bilirubin.*indirect|indirect.*bilirubin/i);
+
+    if (!isNaN(bilTotal) && !isNaN(bilDirect) && isNaN(bilIndirect)) {
+      setVal(/bilirubin.*indirect|indirect.*bilirubin/i, bilTotal - bilDirect);
+    } else if (!isNaN(bilTotal) && !isNaN(bilIndirect) && isNaN(bilDirect)) {
+      setVal(/bilirubin.*direct|direct.*bilirubin/i, bilTotal - bilIndirect);
+    } else if (!isNaN(bilDirect) && !isNaN(bilIndirect) && isNaN(bilTotal)) {
+      setVal(/bilirubin.*total|total.*bilirubin/i, bilDirect + bilIndirect);
+    }
+
+    // 2. Protein calculations: Total Protein = Albumin + Globulin
+    const protTotal = getVal(/total.*protein|protein.*total/i);
+    const albumin = getVal(/albumin/i);
+    const globulin = getVal(/globulin/i);
+
+    if (!isNaN(protTotal) && !isNaN(albumin) && isNaN(globulin)) {
+      setVal(/globulin/i, protTotal - albumin);
+    } else if (!isNaN(protTotal) && !isNaN(globulin) && isNaN(albumin)) {
+      setVal(/albumin/i, protTotal - globulin);
+    } else if (!isNaN(albumin) && !isNaN(globulin) && isNaN(protTotal)) {
+      setVal(/total.*protein|protein.*total/i, albumin + globulin);
+    }
+
+    // 3. A/G Ratio calculation: Albumin / Globulin
+    const currentGlobulin = getVal(/globulin/i);
+    const currentAlbumin = getVal(/albumin/i);
+    if (!isNaN(currentAlbumin) && !isNaN(currentGlobulin) && currentGlobulin !== 0) {
+      setVal(/a\/g.*ratio|ratio.*a\/g/i, currentAlbumin / currentGlobulin);
+    }
+
+    // 4. eAG calculation: 28.7 * HbA1c - 46.7
+    const hba1c = getVal(/hba1c|glycated.*hemoglobin/i);
+    if (!isNaN(hba1c)) {
+      setVal(/estimated.*average.*glucose|eag/i, 28.7 * hba1c - 46.7);
+    }
+
+    // 5. VLDL Cholesterol calculation: Triglycerides / 5
+    const triglycerides = getVal(/triglycerides/i);
+    if (!isNaN(triglycerides)) {
+      setVal(/vldl/i, triglycerides / 5);
+    }
+
+    // 6. LDL Cholesterol calculation: Total Cholesterol - (HDL + VLDL)
+    const vldl = getVal(/vldl/i);
+    const hdl = getVal(/hdl/i);
+    const totalChol = getVal(/total.*cholesterol|cholesterol.*total/i);
+    if (!isNaN(totalChol) && !isNaN(hdl) && !isNaN(vldl)) {
+      setVal(/ldl/i, totalChol - (hdl + vldl));
+    }
+
+    // 7. CBC calculations: MCV, MCH, MCHC
+    const hb = getVal(/hemoglobin|hb/i);
+    const rbc = getVal(/red.*blood.*cell|rbc/i);
+    const pcv = getVal(/packed.*cell.*volume|pcv|hematocrit|hct/i);
+
+    if (!isNaN(pcv) && !isNaN(rbc) && rbc !== 0) {
+      setVal(/mean.*corpuscular.*volume|mcv/i, (pcv * 10) / rbc);
+    }
+    if (!isNaN(hb) && !isNaN(rbc) && rbc !== 0) {
+      setVal(/mean.*corpuscular.*hemoglobin\b|mch\b/i, (hb * 10) / rbc);
+    }
+    if (!isNaN(hb) && !isNaN(pcv) && pcv !== 0) {
+      setVal(/mean.*corpuscular.*hemoglobin.*conc|mchc/i, (hb * 100) / pcv);
+    }
+
+    return results;
+  };
+
   const updateResult = (
     reportIndex,
     testIndex,
@@ -250,6 +338,9 @@ const ReportsPage = () => {
       } else {
         results.push({ parameterName, value });
       }
+
+      // Automatically run calculations for dependent parameters
+      results = runCalculations(results);
 
       updatedReports[reportIndex].tests[testIndex] = {
         ...currentTest,
