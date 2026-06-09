@@ -129,6 +129,66 @@ const importTests = async () => {
       });
     }
 
+    // Ensure Blood Group & Rh Typing (ABO & Rh) is present
+    const bloodGroupRhExists = tests.some(t => t.testName.toLowerCase().includes("blood group & rh") || t.testName.toLowerCase().includes("blood group and rh"));
+    if (!bloodGroupRhExists) {
+      tests.push({
+        testName: "Blood Group & Rh Typing (ABO & Rh)",
+        category: "Hematology",
+        specimen: "Whole Blood",
+        price: 150,
+        parameters: getClinicalParameters("Blood Group & Rh Typing (ABO & Rh)", "Hematology")
+      });
+    }
+
+    // Ensure Bleeding Time & Clotting Time (BT/CT) is present
+    const btCtExists = tests.some(t => t.testName.toLowerCase().includes("bt/ct") || t.testName.toLowerCase().includes("bleeding time & clotting time") || t.testName.toLowerCase().includes("bleeding time and clotting time"));
+    if (!btCtExists) {
+      tests.push({
+        testName: "Bleeding Time & Clotting Time (BT/CT)",
+        category: "Hematology",
+        specimen: "Whole Blood",
+        price: 150,
+        parameters: getClinicalParameters("Bleeding Time & Clotting Time (BT/CT)", "Hematology")
+      });
+    }
+
+    // Ensure Dengue Profile is present
+    const dengueProfileExists = tests.some(t => t.testName.toLowerCase() === "dengue profile");
+    if (!dengueProfileExists) {
+      tests.push({
+        testName: "Dengue Profile",
+        category: "Serology",
+        specimen: "Serum",
+        price: 800,
+        parameters: getClinicalParameters("Dengue Profile", "Serology")
+      });
+    }
+
+    // Ensure Viral Marker Profile (Tri-Dot) is present
+    const viralMarkersExists = tests.some(t => t.testName.toLowerCase().includes("viral marker") || t.testName.toLowerCase().includes("tri-dot") || t.testName.toLowerCase().includes("tridot"));
+    if (!viralMarkersExists) {
+      tests.push({
+        testName: "Viral Marker Profile (Tri-Dot)",
+        category: "Serology",
+        specimen: "Serum",
+        price: 750,
+        parameters: getClinicalParameters("Viral Marker Profile (Tri-Dot)", "Serology")
+      });
+    }
+
+    // Ensure Rheumatoid Panel is present
+    const rheumatoidPanelExists = tests.some(t => t.testName.toLowerCase().includes("rheumatoid panel") || t.testName.toLowerCase().includes("arthritis profile"));
+    if (!rheumatoidPanelExists) {
+      tests.push({
+        testName: "Rheumatoid Panel",
+        category: "Immunology",
+        specimen: "Serum",
+        price: 900,
+        parameters: getClinicalParameters("Rheumatoid Panel", "Immunology")
+      });
+    }
+
     console.log(`Inserting ${tests.length} real-world medical-grade tests into MongoDB...`);
     await Test.insertMany(tests);
 

@@ -176,6 +176,30 @@ const dictionary = {
     { parameterName: "Clotting Time (CT)", unit: "minutes", normalRangeMale: "3.0-9.0", normalRangeFemale: "3.0-9.0" },
     { parameterName: "Thrombin Time (TT)", unit: "seconds", normalRangeMale: "14.0-19.0", normalRangeFemale: "14.0-19.0" },
     { parameterName: "Fibrinogen", unit: "mg/dL", normalRangeMale: "200-400", normalRangeFemale: "200-400" }
+  ],
+  bloodgroup_rh: [
+    { parameterName: "Blood Group (ABO)", unit: "", normalRangeMale: "A/B/AB/O", normalRangeFemale: "A/B/AB/O" },
+    { parameterName: "Rh Factor (Rh Typing)", unit: "", normalRangeMale: "Positive/Negative", normalRangeFemale: "Positive/Negative" }
+  ],
+  bt_ct: [
+    { parameterName: "Bleeding Time (BT)", unit: "minutes", normalRangeMale: "1.0-5.0", normalRangeFemale: "1.0-5.0" },
+    { parameterName: "Clotting Time (CT)", unit: "minutes", normalRangeMale: "3.0-9.0", normalRangeFemale: "3.0-9.0" }
+  ],
+  dengue_profile: [
+    { parameterName: "Dengue NS1 Antigen", unit: "index", normalRangeMale: "Negative (< 0.9)", normalRangeFemale: "Negative (< 0.9)" },
+    { parameterName: "Dengue IgG Antibody", unit: "index", normalRangeMale: "Negative (< 0.9)", normalRangeFemale: "Negative (< 0.9)" },
+    { parameterName: "Dengue IgM Antibody", unit: "index", normalRangeMale: "Negative (< 0.9)", normalRangeFemale: "Negative (< 0.9)" }
+  ],
+  viral_markers: [
+    { parameterName: "HIV I & II Antibodies", unit: "index", normalRangeMale: "Non-Reactive (Index < 0.9)", normalRangeFemale: "Non-Reactive (Index < 0.9)" },
+    { parameterName: "HBsAg (Hepatitis B Surface Ag)", unit: "index", normalRangeMale: "Non-Reactive (Index < 0.9)", normalRangeFemale: "Non-Reactive (Index < 0.9)" },
+    { parameterName: "HCV Antibody (Hepatitis C)", unit: "index", normalRangeMale: "Non-Reactive (Index < 0.9)", normalRangeFemale: "Non-Reactive (Index < 0.9)" }
+  ],
+  rheumatoid_panel: [
+    { parameterName: "Rheumatoid Factor (RA Factor)", unit: "IU/mL", normalRangeMale: "0.0-20.0", normalRangeFemale: "0.0-20.0" },
+    { parameterName: "C-Reactive Protein (CRP)", unit: "mg/L", normalRangeMale: "0.0-6.0", normalRangeFemale: "0.0-6.0" },
+    { parameterName: "Antistreptolysin O (ASO)", unit: "IU/mL", normalRangeMale: "0.0-200.0", normalRangeFemale: "0.0-200.0" },
+    { parameterName: "Uric Acid", unit: "mg/dL", normalRangeMale: "3.5-7.2", normalRangeFemale: "2.6-6.0" }
   ]
 };
 
@@ -282,6 +306,21 @@ export const getClinicalParameters = (testName, category) => {
   const cleanCat = (category || "").trim().toLowerCase();
 
   // 1. Panel Matches via cleanName matching key profiles
+  if (cleanName.includes("blood group & rh") || cleanName.includes("blood group and rh") || cleanName.includes("abo & rh") || cleanName.includes("abo and rh")) {
+    return dictionary.bloodgroup_rh;
+  }
+  if (cleanName.includes("bleeding time & clotting time") || cleanName.includes("bleeding time and clotting time") || cleanName.includes("bt/ct") || cleanName.includes("bt & ct") || cleanName.includes("bt and ct")) {
+    return dictionary.bt_ct;
+  }
+  if (cleanName.includes("dengue profile") || cleanName.includes("dengue panel")) {
+    return dictionary.dengue_profile;
+  }
+  if (cleanName.includes("viral marker") || cleanName.includes("tri-dot") || cleanName.includes("tridot")) {
+    return dictionary.viral_markers;
+  }
+  if (cleanName.includes("rheumatoid panel") || cleanName.includes("rheumatoid factor panel") || cleanName.includes("arthritis profile")) {
+    return dictionary.rheumatoid_panel;
+  }
   if (cleanName.includes("coagulogram") || cleanName.includes("coagulation profile") || cleanName.includes("coagulation panel")) {
     return dictionary.coagulogram;
   }

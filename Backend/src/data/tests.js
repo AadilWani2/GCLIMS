@@ -300,6 +300,60 @@ const tests = [
       { parameterName: "Thrombin Time (TT)", unit: "seconds", normalRangeMale: "14.0-19.0", normalRangeFemale: "14.0-19.0" },
       { parameterName: "Fibrinogen", unit: "mg/dL", normalRangeMale: "200-400", normalRangeFemale: "200-400" }
     ]
+  },
+  {
+    testName: "Blood Group & Rh Typing (ABO & Rh)",
+    category: "Hematology",
+    specimen: "Whole Blood",
+    price: 150,
+    parameters: [
+      { parameterName: "Blood Group (ABO)", unit: "", normalRangeMale: "A/B/AB/O", normalRangeFemale: "A/B/AB/O" },
+      { parameterName: "Rh Factor (Rh Typing)", unit: "", normalRangeMale: "Positive/Negative", normalRangeFemale: "Positive/Negative" }
+    ]
+  },
+  {
+    testName: "Bleeding Time & Clotting Time (BT/CT)",
+    category: "Hematology",
+    specimen: "Whole Blood",
+    price: 150,
+    parameters: [
+      { parameterName: "Bleeding Time (BT)", unit: "minutes", normalRangeMale: "1.0-5.0", normalRangeFemale: "1.0-5.0" },
+      { parameterName: "Clotting Time (CT)", unit: "minutes", normalRangeMale: "3.0-9.0", normalRangeFemale: "3.0-9.0" }
+    ]
+  },
+  {
+    testName: "Dengue Profile",
+    category: "Serology",
+    specimen: "Serum",
+    price: 800,
+    parameters: [
+      { parameterName: "Dengue NS1 Antigen", unit: "index", normalRangeMale: "Negative (< 0.9)", normalRangeFemale: "Negative (< 0.9)" },
+      { parameterName: "Dengue IgG Antibody", unit: "index", normalRangeMale: "Negative (< 0.9)", normalRangeFemale: "Negative (< 0.9)" },
+      { parameterName: "Dengue IgM Antibody", unit: "index", normalRangeMale: "Negative (< 0.9)", normalRangeFemale: "Negative (< 0.9)" }
+    ]
+  },
+  {
+    testName: "Viral Marker Profile (Tri-Dot)",
+    category: "Serology",
+    specimen: "Serum",
+    price: 750,
+    parameters: [
+      { parameterName: "HIV I & II Antibodies", unit: "index", normalRangeMale: "Non-Reactive (Index < 0.9)", normalRangeFemale: "Non-Reactive (Index < 0.9)" },
+      { parameterName: "HBsAg (Hepatitis B Surface Ag)", unit: "index", normalRangeMale: "Non-Reactive (Index < 0.9)", normalRangeFemale: "Non-Reactive (Index < 0.9)" },
+      { parameterName: "HCV Antibody (Hepatitis C)", unit: "index", normalRangeMale: "Non-Reactive (Index < 0.9)", normalRangeFemale: "Non-Reactive (Index < 0.9)" }
+    ]
+  },
+  {
+    testName: "Rheumatoid Panel",
+    category: "Immunology",
+    specimen: "Serum",
+    price: 900,
+    parameters: [
+      { parameterName: "Rheumatoid Factor (RA Factor)", unit: "IU/mL", normalRangeMale: "0.0-20.0", normalRangeFemale: "0.0-20.0" },
+      { parameterName: "C-Reactive Protein (CRP)", unit: "mg/L", normalRangeMale: "0.0-6.0", normalRangeFemale: "0.0-6.0" },
+      { parameterName: "Antistreptolysin O (ASO)", unit: "IU/mL", normalRangeMale: "0.0-200.0", normalRangeFemale: "0.0-200.0" },
+      { parameterName: "Uric Acid", unit: "mg/dL", normalRangeMale: "3.5-7.2", normalRangeFemale: "2.6-6.0" }
+    ]
   }
 ];
 
