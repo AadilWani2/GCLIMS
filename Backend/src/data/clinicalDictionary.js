@@ -165,6 +165,17 @@ const dictionary = {
     { parameterName: "Basophils (BASO%)", unit: "%", normalRangeMale: "0.0-2.0", normalRangeFemale: "0.0-2.0", normalRangeChild: "0.0-2.0" },
     { parameterName: "Basophils (BASO#)", unit: "/cmm", normalRangeMale: "0-100", normalRangeFemale: "0-100", normalRangeChild: "0-100" },
     { parameterName: "Mean Platelet Volume (MPV)", unit: "fL", normalRangeMale: "7.5-11.5", normalRangeFemale: "7.5-11.5", normalRangeChild: "7.5-11.5" }
+  ],
+  coagulogram: [
+    { parameterName: "Prothrombin Time (PT)", unit: "seconds", normalRangeMale: "11.0-15.0", normalRangeFemale: "11.0-15.0" },
+    { parameterName: "Control Time (PT Control)", unit: "seconds", normalRangeMale: "11.0-15.0", normalRangeFemale: "11.0-15.0" },
+    { parameterName: "INR (International Normalized Ratio)", unit: "ratio", normalRangeMale: "0.8-1.2", normalRangeFemale: "0.8-1.2" },
+    { parameterName: "Activated Partial Thromboplastin Time (APTT)", unit: "seconds", normalRangeMale: "25.0-35.0", normalRangeFemale: "25.0-35.0" },
+    { parameterName: "Control Time (APTT Control)", unit: "seconds", normalRangeMale: "25.0-35.0", normalRangeFemale: "25.0-35.0" },
+    { parameterName: "Bleeding Time (BT)", unit: "minutes", normalRangeMale: "1.0-5.0", normalRangeFemale: "1.0-5.0" },
+    { parameterName: "Clotting Time (CT)", unit: "minutes", normalRangeMale: "3.0-9.0", normalRangeFemale: "3.0-9.0" },
+    { parameterName: "Thrombin Time (TT)", unit: "seconds", normalRangeMale: "14.0-19.0", normalRangeFemale: "14.0-19.0" },
+    { parameterName: "Fibrinogen", unit: "mg/dL", normalRangeMale: "200-400", normalRangeFemale: "200-400" }
   ]
 };
 
@@ -271,6 +282,9 @@ export const getClinicalParameters = (testName, category) => {
   const cleanCat = (category || "").trim().toLowerCase();
 
   // 1. Panel Matches via cleanName matching key profiles
+  if (cleanName.includes("coagulogram") || cleanName.includes("coagulation profile") || cleanName.includes("coagulation panel")) {
+    return dictionary.coagulogram;
+  }
   if ((cleanName.includes("cbc") || cleanName.includes("blood count")) && (cleanName.includes("3-part") || cleanName.includes("3 part") || cleanName.includes("3pot") || cleanName.includes("3 pot"))) {
     return dictionary.cbc3part;
   }

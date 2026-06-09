@@ -283,6 +283,23 @@ const tests = [
       { parameterName: "Basophils (BASO#)", unit: "/cmm", normalRangeMale: "0-100", normalRangeFemale: "0-100", normalRangeChild: "0-100" },
       { parameterName: "Mean Platelet Volume (MPV)", unit: "fL", normalRangeMale: "7.5-11.5", normalRangeFemale: "7.5-11.5", normalRangeChild: "7.5-11.5" }
     ]
+  },
+  {
+    testName: "Coagulation Profile / Coagulogram",
+    category: "Coagulation",
+    specimen: "Plasma",
+    price: 800,
+    parameters: [
+      { parameterName: "Prothrombin Time (PT)", unit: "seconds", normalRangeMale: "11.0-15.0", normalRangeFemale: "11.0-15.0" },
+      { parameterName: "Control Time (PT Control)", unit: "seconds", normalRangeMale: "11.0-15.0", normalRangeFemale: "11.0-15.0" },
+      { parameterName: "INR (International Normalized Ratio)", unit: "ratio", normalRangeMale: "0.8-1.2", normalRangeFemale: "0.8-1.2" },
+      { parameterName: "Activated Partial Thromboplastin Time (APTT)", unit: "seconds", normalRangeMale: "25.0-35.0", normalRangeFemale: "25.0-35.0" },
+      { parameterName: "Control Time (APTT Control)", unit: "seconds", normalRangeMale: "25.0-35.0", normalRangeFemale: "25.0-35.0" },
+      { parameterName: "Bleeding Time (BT)", unit: "minutes", normalRangeMale: "1.0-5.0", normalRangeFemale: "1.0-5.0" },
+      { parameterName: "Clotting Time (CT)", unit: "minutes", normalRangeMale: "3.0-9.0", normalRangeFemale: "3.0-9.0" },
+      { parameterName: "Thrombin Time (TT)", unit: "seconds", normalRangeMale: "14.0-19.0", normalRangeFemale: "14.0-19.0" },
+      { parameterName: "Fibrinogen", unit: "mg/dL", normalRangeMale: "200-400", normalRangeFemale: "200-400" }
+    ]
   }
 ];
 

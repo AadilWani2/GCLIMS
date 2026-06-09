@@ -89,8 +89,13 @@ const importTests = async () => {
         // Fetch highly accurate clinical parameters using our clinical dictionary mapping
         const clinicalParams = getClinicalParameters(testName, category);
 
+        let displayName = testName;
+        if (key === "coagulation profile") {
+          displayName = "Coagulation Profile / Coagulogram";
+        }
+
         groupedTests[key] = {
-          testName: testName,
+          testName: displayName,
           category: category,
           specimen: row.specimen ? String(row.specimen).trim() : "Blood",
           price: price,
