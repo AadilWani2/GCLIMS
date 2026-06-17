@@ -106,23 +106,60 @@ const LabEntryPage = () => {
     if (isNaN(numValue)) return null;
     
     const rangeText = getNormalRange(parameter);
-    const rangeStr = rangeText.split(" ")[0]; 
+    const rangePart = rangeText.split("(")[0].trim();
+    const rangeStr = rangePart.replace(/\s+/g, "");
     
-    if (!rangeStr || !rangeStr.includes("-")) return null;
-    
-    const [minStr, maxStr] = rangeStr.split("-");
-    const minVal = parseFloat(minStr);
-    const maxVal = parseFloat(maxStr);
-    
-    if (isNaN(minVal) || isNaN(maxVal)) return null;
-    
-    if (numValue < minVal) {
-      return { status: "Low", color: "border-amber-350 text-amber-700 bg-amber-50/60" };
+    if (!rangeStr) return null;
+
+    if (rangeStr.includes("-")) {
+      const [minStr, maxStr] = rangeStr.split("-");
+      const minVal = parseFloat(minStr);
+      const maxVal = parseFloat(maxStr);
+      
+      if (!isNaN(minVal) && !isNaN(maxVal)) {
+        if (numValue < minVal) {
+          return { status: "Low", color: "border-amber-350 text-amber-700 bg-amber-50/60" };
+        }
+        if (numValue > maxVal) {
+          return { status: "High", color: "border-rose-350 text-rose-700 bg-rose-50/60" };
+        }
+        return { status: "Normal", color: "border-emerald-350 text-emerald-700 bg-emerald-50/60" };
+      }
     }
-    if (numValue > maxVal) {
-      return { status: "High", color: "border-rose-350 text-rose-700 bg-rose-50/60" };
+
+    if (rangeStr.includes("<=")) {
+      const maxVal = parseFloat(rangeStr.replace("<=", ""));
+      if (!isNaN(maxVal)) {
+        return numValue > maxVal 
+          ? { status: "High", color: "border-rose-350 text-rose-700 bg-rose-50/60" } 
+          : { status: "Normal", color: "border-emerald-350 text-emerald-700 bg-emerald-50/60" };
+      }
+    } else if (rangeStr.includes("<")) {
+      const maxVal = parseFloat(rangeStr.replace("<", ""));
+      if (!isNaN(maxVal)) {
+        return numValue > maxVal 
+          ? { status: "High", color: "border-rose-350 text-rose-700 bg-rose-50/60" } 
+          : { status: "Normal", color: "border-emerald-350 text-emerald-700 bg-emerald-50/60" };
+      }
     }
-    return { status: "Normal", color: "border-emerald-350 text-emerald-700 bg-emerald-50/60" };
+
+    if (rangeStr.includes(">=")) {
+      const minVal = parseFloat(rangeStr.replace(">=", ""));
+      if (!isNaN(minVal)) {
+        return numValue < minVal 
+          ? { status: "Low", color: "border-amber-350 text-amber-700 bg-amber-50/60" } 
+          : { status: "Normal", color: "border-emerald-350 text-emerald-700 bg-emerald-50/60" };
+      }
+    } else if (rangeStr.includes(">")) {
+      const minVal = parseFloat(rangeStr.replace(">", ""));
+      if (!isNaN(minVal)) {
+        return numValue < minVal 
+          ? { status: "Low", color: "border-amber-350 text-amber-700 bg-amber-50/60" } 
+          : { status: "Normal", color: "border-emerald-350 text-emerald-700 bg-emerald-50/60" };
+      }
+    }
+
+    return null;
   };
 
   const existingPatient = patients.find((p) => p.phone === formData.phone);

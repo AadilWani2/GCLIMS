@@ -144,10 +144,10 @@ const getClinicalInterpretation = (paramName, status) => {
     { pattern: /\bmcv\b|mean.*corpuscular.*volume/i, key: "MCV" },
     { pattern: /\bmchc\b|mean.*corpuscular.*hemoglobin.*conc/i, key: "MCHC" },
     { pattern: /\bmch\b|mean.*corpuscular.*hemoglobin/i, key: "MCH" },
-    { pattern: /hemoglobin/i, key: "Hemoglobin" },
+    { pattern: /hemoglobin|\bhb\b|\bhgb\b/i, key: "Hemoglobin" },
     { pattern: /\brbc\b|red.*blood.*cell/i, key: "RBC Count" },
-    { pattern: /\bwbc\b|white.*blood.*cell|leukocyte/i, key: "WBC Count" },
-    { pattern: /platelet/i, key: "Platelet Count" },
+    { pattern: /\bwbc\b|white.*blood.*cell|leukocyte|\btlc\b/i, key: "WBC Count" },
+    { pattern: /platelet|\bplt\b/i, key: "Platelet Count" },
     { pattern: /\burea\b/i, key: "Urea" },
     { pattern: /creatinine/i, key: "Creatinine" },
     { pattern: /uric.*acid/i, key: "Uric Acid" },
@@ -589,19 +589,48 @@ const ReportsPage = () => {
     if (isNaN(numValue)) return null;
     
     const rangeText = getNormalRange(patient, parameter);
-    const rangeStr = rangeText.split(" ")[0]; 
+    const rangePart = rangeText.split("(")[0].trim();
+    const rangeStr = rangePart.replace(/\s+/g, "");
     
-    if (!rangeStr || !rangeStr.includes("-")) return null;
-    
-    const [minStr, maxStr] = rangeStr.split("-");
-    const minVal = parseFloat(minStr);
-    const maxVal = parseFloat(maxStr);
-    
-    if (isNaN(minVal) || isNaN(maxVal)) return null;
-    
-    if (numValue < minVal) return "Low";
-    if (numValue > maxVal) return "High";
-    return "Normal";
+    if (!rangeStr) return null;
+
+    if (rangeStr.includes("-")) {
+      const [minStr, maxStr] = rangeStr.split("-");
+      const minVal = parseFloat(minStr);
+      const maxVal = parseFloat(maxStr);
+      
+      if (!isNaN(minVal) && !isNaN(maxVal)) {
+        if (numValue < minVal) return "Low";
+        if (numValue > maxVal) return "High";
+        return "Normal";
+      }
+    }
+
+    if (rangeStr.includes("<=")) {
+      const maxVal = parseFloat(rangeStr.replace("<=", ""));
+      if (!isNaN(maxVal)) {
+        return numValue > maxVal ? "High" : "Normal";
+      }
+    } else if (rangeStr.includes("<")) {
+      const maxVal = parseFloat(rangeStr.replace("<", ""));
+      if (!isNaN(maxVal)) {
+        return numValue > maxVal ? "High" : "Normal";
+      }
+    }
+
+    if (rangeStr.includes(">=")) {
+      const minVal = parseFloat(rangeStr.replace(">=", ""));
+      if (!isNaN(minVal)) {
+        return numValue < minVal ? "Low" : "Normal";
+      }
+    } else if (rangeStr.includes(">")) {
+      const minVal = parseFloat(rangeStr.replace(">", ""));
+      if (!isNaN(minVal)) {
+        return numValue < minVal ? "Low" : "Normal";
+      }
+    }
+
+    return null;
   };
 
   const saveReport = async (
