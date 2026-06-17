@@ -883,20 +883,9 @@ const ReportsPage = () => {
           y += 7;
         });
 
-        // Faint bottom section divider
-        pdf.setDrawColor(lightGray[0], lightGray[1], lightGray[2]);
-        pdf.setLineWidth(0.2);
-        pdf.line(15, y + 1, pageWidth - 15, y + 1);
-
-        y += 8;
-      }
-    });
-
-    // Draw Clinical Reference Notes inside PDF
-    const abnormalNotes = [];
-    report.tests.forEach((test) => {
-      if (typeof test !== "string" && test.parameters) {
-        test.parameters.forEach((parameter) => {
+        // Draw Clinical Reference Notes for this specific test
+        const testAbnormalNotes = [];
+        test.parameters?.forEach((parameter) => {
           const resultObj = test.results?.find(
             (r) => r.parameterName === parameter.parameterName
           );
@@ -905,7 +894,7 @@ const ReportsPage = () => {
           if (status && status !== "Normal") {
             const note = getClinicalInterpretation(parameter.parameterName, status);
             if (note) {
-              abnormalNotes.push({
+              testAbnormalNotes.push({
                 parameter: parameter.parameterName,
                 status,
                 note
@@ -913,52 +902,59 @@ const ReportsPage = () => {
             }
           }
         });
-      }
-    });
 
-    if (abnormalNotes.length > 0) {
-      if (y > pageHeight - 65) {
-        pdf.addPage();
-        currentPage++;
-        drawHeader();
-        drawPatientInfo();
-        drawFooter(currentPage);
-        y = 67;
-      }
+        if (testAbnormalNotes.length > 0) {
+          if (y > pageHeight - 45) {
+            pdf.addPage();
+            currentPage++;
+            drawHeader();
+            drawPatientInfo();
+            drawFooter(currentPage);
+            y = 67;
+          }
 
-      pdf.setFillColor(254, 243, 199); // amber 100 bg
-      pdf.rect(15, y, pageWidth - 30, 6, "F");
-      
-      pdf.setFont("helvetica", "bold");
-      pdf.setFontSize(7.5);
-      pdf.setTextColor(146, 64, 14); // amber 800
-      pdf.text("CLINICAL INTERPRETATIONS & ABNORMAL VALUE REFERENCE", 18, y + 4.2);
-      y += 7.5;
+          pdf.setFillColor(254, 243, 199); // amber 100 bg
+          pdf.rect(15, y, pageWidth - 30, 6, "F");
+          
+          pdf.setFont("helvetica", "bold");
+          pdf.setFontSize(7.5);
+          pdf.setTextColor(146, 64, 14); // amber 800
+          pdf.text(`CLINICAL INTERPRETATIONS & ABNORMAL VALUE REFERENCE (${test.testName.toUpperCase()})`, 18, y + 4.2);
+          y += 7.5;
 
-      abnormalNotes.forEach((item) => {
-        const noteStr = `${item.parameter} (${item.status.toUpperCase()}): ${item.note}`;
-        const lines = pdf.splitTextToSize(noteStr, pageWidth - 30);
-        const noteHeight = lines.length * 4.2;
+          testAbnormalNotes.forEach((item) => {
+            const noteStr = `${item.parameter} (${item.status.toUpperCase()}): ${item.note}`;
+            const lines = pdf.splitTextToSize(noteStr, pageWidth - 30);
+            const noteHeight = lines.length * 4.2;
 
-        if (y + noteHeight > pageHeight - 32) {
-          pdf.addPage();
-          currentPage++;
-          drawHeader();
-          drawPatientInfo();
-          drawFooter(currentPage);
-          y = 67;
+            if (y + noteHeight > pageHeight - 32) {
+              pdf.addPage();
+              currentPage++;
+              drawHeader();
+              drawPatientInfo();
+              drawFooter(currentPage);
+              y = 67;
+            }
+
+            pdf.setFont("helvetica", "normal");
+            pdf.setFontSize(7.5);
+            pdf.setTextColor(textBlack[0], textBlack[1], textBlack[2]);
+            pdf.text(lines, 15, y + 3.2);
+
+            y += noteHeight + 2;
+          });
+
+          y += 3;
         }
 
-        pdf.setFont("helvetica", "normal");
-        pdf.setFontSize(7.5);
-        pdf.setTextColor(textBlack[0], textBlack[1], textBlack[2]);
-        pdf.text(lines, 15, y + 3.2);
+        // Faint bottom section divider
+        pdf.setDrawColor(lightGray[0], lightGray[1], lightGray[2]);
+        pdf.setLineWidth(0.2);
+        pdf.line(15, y + 1, pageWidth - 15, y + 1);
 
-        y += noteHeight + 2;
-      });
-
-      y += 3;
-    }
+        y += 8;
+      }
+    });
 
     // 10. End of Report and Signature safe boundary check
     if (y > pageHeight - 50) {
@@ -1292,6 +1288,53 @@ const ReportsPage = () => {
                             </tr>
                           );
                         })}
+                        {(() => {
+                          const testAbnormalNotes = [];
+                          test.parameters?.forEach((parameter) => {
+                            const resultObj = test.results?.find(r => r.parameterName === parameter.parameterName);
+                            const resultValue = resultObj ? resultObj.value : "";
+                            const status = checkRangeStatus(report.patient, parameter, resultValue);
+                            if (status && status !== "Normal") {
+                              const note = getClinicalInterpretation(parameter.parameterName, status);
+                              if (note) {
+                                testAbnormalNotes.push({
+                                  parameter: parameter.parameterName,
+                                  status,
+                                  note
+                                });
+                              }
+                            }
+                          });
+
+                          if (testAbnormalNotes.length === 0) return null;
+
+                          return (
+                            <tr>
+                              <td colSpan="4" className="p-4 bg-amber-50/20 border-b">
+                                <div className="border border-amber-200/60 bg-white rounded-xl p-4">
+                                  <h4 className="text-[10px] font-extrabold text-amber-800 uppercase tracking-wider mb-2">
+                                    💡 Clinical Interpretation & Abnormal Value Reference Notes (for {test.testName})
+                                  </h4>
+                                  <div className="space-y-2">
+                                    {testAbnormalNotes.map((item, idx) => (
+                                      <div key={idx} className="text-xs text-slate-700 leading-relaxed border-b border-dashed border-amber-100 last:border-b-0 pb-2 last:pb-0">
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                          <span className="font-extrabold text-slate-900 text-[11px]">{item.parameter}</span>
+                                          <span className={`inline-block text-[8px] font-extrabold px-1.5 py-0.5 rounded uppercase tracking-wider ${
+                                            item.status === "High" ? "bg-rose-100 text-rose-850" : "bg-amber-100 text-amber-850"
+                                          }`}>
+                                            {item.status.toUpperCase()}
+                                          </span>
+                                        </div>
+                                        <p className="mt-1 text-slate-600 font-medium text-[11px]">{item.note}</p>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })()}
                       </React.Fragment>
                     );
                   })}
@@ -1732,6 +1775,55 @@ const ReportsPage = () => {
                             </tr>
                           );
                         })}
+                        {!isEditing && (() => {
+                          const testAbnormalNotes = [];
+                          test.parameters?.forEach((parameter) => {
+                            const resultObj = test.results?.find(
+                              (r) => r.parameterName === parameter.parameterName
+                            );
+                            const resultValue = resultObj ? resultObj.value : "";
+                            const status = checkRangeStatus(report.patient, parameter, resultValue);
+                            if (status && status !== "Normal") {
+                              const note = getClinicalInterpretation(parameter.parameterName, status);
+                              if (note) {
+                                testAbnormalNotes.push({
+                                  parameter: parameter.parameterName,
+                                  status,
+                                  note
+                                });
+                              }
+                            }
+                          });
+
+                          if (testAbnormalNotes.length === 0) return null;
+
+                          return (
+                            <tr>
+                              <td colSpan="4" className="p-4 bg-amber-50/20 border-b border-slate-100">
+                                <div className="border border-amber-200/60 bg-white rounded-xl p-4 shadow-xs">
+                                  <h4 className="text-[10px] font-extrabold text-amber-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    💡 Clinical Interpretation & Reference Notes (for {test.testName})
+                                  </h4>
+                                  <div className="space-y-2">
+                                    {testAbnormalNotes.map((item, idx) => (
+                                      <div key={idx} className="text-xs text-slate-700 leading-relaxed border-b border-dashed border-amber-100 last:border-b-0 pb-2 last:pb-0">
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                          <span className="font-extrabold text-slate-900 text-[11px]">{item.parameter}</span>
+                                          <span className={`inline-block text-[8px] font-extrabold px-1.5 py-0.5 rounded uppercase tracking-wider ${
+                                            item.status === "High" ? "bg-rose-100 text-rose-700" : "bg-amber-100 text-amber-700"
+                                          }`}>
+                                            {item.status.toUpperCase()}
+                                          </span>
+                                        </div>
+                                        <p className="mt-1 text-slate-600 font-medium text-[11px]">{item.note}</p>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })()}
                       </React.Fragment>
                     );
                   })}
@@ -1755,56 +1847,7 @@ const ReportsPage = () => {
               </div>
             )}
 
-            {/* CLINICAL CORRELATIONS & REFERENCE NOTES */}
-            {(() => {
-              const abnormalNotes = [];
-              report.tests.forEach((test) => {
-                if (typeof test !== "string" && test.parameters) {
-                  test.parameters.forEach((parameter) => {
-                    const resultObj = test.results?.find(
-                      (r) => r.parameterName === parameter.parameterName
-                    );
-                    const resultValue = resultObj ? resultObj.value : "";
-                    const status = checkRangeStatus(report.patient, parameter, resultValue);
-                    if (status && status !== "Normal") {
-                      const note = getClinicalInterpretation(parameter.parameterName, status);
-                      if (note) {
-                        abnormalNotes.push({
-                          parameter: parameter.parameterName,
-                          status,
-                          note
-                        });
-                      }
-                    }
-                  });
-                }
-              });
 
-              if (abnormalNotes.length === 0) return null;
-
-              return (
-                <div className="mt-8 border border-amber-200/80 bg-gradient-to-br from-amber-50/30 via-amber-50/10 to-transparent rounded-2xl p-6 shadow-sm shadow-amber-100/30">
-                  <h4 className="text-xs font-extrabold text-amber-800 uppercase tracking-[0.15em] mb-4 flex items-center gap-2">
-                    💡 Clinical Interpretation & Abnormal Value Reference Notes
-                  </h4>
-                  <div className="space-y-3.5">
-                    {abnormalNotes.map((item, idx) => (
-                      <div key={idx} className="text-xs text-slate-700 leading-relaxed border-b border-dashed border-amber-100 last:border-b-0 pb-3 last:pb-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-extrabold text-slate-900">{item.parameter}</span>
-                          <span className={`inline-block text-[8.5px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider shadow-sm ${
-                            item.status === "High" ? "bg-rose-100 text-rose-850" : "bg-amber-100 text-amber-850"
-                          }`}>
-                            {item.status.toUpperCase()} VALUE
-                          </span>
-                        </div>
-                        <p className="mt-1.5 text-slate-600 font-medium text-[12px]">{item.note}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              );
-            })()}
 
             {/* FOOTER */}
             <div className="mt-12 flex justify-between items-end border-t pt-6 border-slate-100">
