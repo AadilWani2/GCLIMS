@@ -183,6 +183,55 @@ const LabEntryPage = () => {
     return matchesSearch && matchesCategory;
   });
 
+  const handleKeyDown = (e) => {
+    if (e.target.tagName === "INPUT" && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+      const form = e.target.form;
+      if (!form) return;
+      
+      const elements = Array.from(form.elements).filter(
+        (el) =>
+          (el.tagName === "INPUT" || el.tagName === "SELECT") &&
+          !el.disabled &&
+          el.type !== "submit" &&
+          el.type !== "hidden"
+      );
+      
+      const index = elements.indexOf(e.target);
+      if (index === -1) return;
+      
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        const nextEl = elements[index + 1];
+        if (nextEl) nextEl.focus();
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        const prevEl = elements[index - 1];
+        if (prevEl) prevEl.focus();
+      }
+    }
+  };
+
+  const handleParameterKeyDown = (e) => {
+    if (e.target.tagName === "INPUT" && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+      e.preventDefault();
+      
+      const container = e.target.closest("tbody") || e.target.closest("table");
+      if (!container) return;
+      
+      const inputs = Array.from(container.querySelectorAll("input[type='text']"));
+      const index = inputs.indexOf(e.target);
+      if (index === -1) return;
+      
+      if (e.key === "ArrowDown") {
+        const nextInput = inputs[index + 1];
+        if (nextInput) nextInput.focus();
+      } else if (e.key === "ArrowUp") {
+        const prevInput = inputs[index - 1];
+        if (prevInput) prevInput.focus();
+      }
+    }
+  };
+
   const submitHandler = async (e) => {
     e.preventDefault();
 
@@ -280,7 +329,7 @@ const LabEntryPage = () => {
             </h2>
           </div>
 
-          <form onSubmit={submitHandler} className="space-y-4">
+          <form onSubmit={submitHandler} onKeyDown={handleKeyDown} className="space-y-4">
             <div>
               <label className="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">
                 Full Name
@@ -618,7 +667,7 @@ const LabEntryPage = () => {
                           </tr>
                         </thead>
 
-                        <tbody className="divide-y divide-slate-100">
+                        <tbody className="divide-y divide-slate-100" onKeyDown={handleParameterKeyDown}>
                           {test.parameters.map((parameter, index) => {
                             const resultObj = test.results?.find(
                               (r) => r.parameterName === parameter.parameterName
