@@ -67,6 +67,11 @@ const BillingPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [showQRModal, setShowQRModal] = useState(false);
+  const [visibleBillsCount, setVisibleBillsCount] = useState(30);
+
+  useEffect(() => {
+    setVisibleBillsCount(30);
+  }, [searchTerm, statusFilter]);
 
   // Modal State
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -365,7 +370,7 @@ const BillingPage = () => {
               {/* MOBILE ONLY CARD STACK (Hidden on desktop viewports) */}
               <div className="block sm:hidden space-y-4 py-2">
                 {filteredBills.length > 0 ? (
-                  filteredBills.map((bill) => {
+                  filteredBills.slice(0, visibleBillsCount).map((bill) => {
                     const initials = getInitials(bill.patient?.name);
                     const st = avatarGradient(bill.patient?.name);
 
@@ -485,7 +490,7 @@ const BillingPage = () => {
                   </thead>
                   <tbody className="divide-y divide-slate-100 text-xs">
                     {filteredBills.length > 0 ? (
-                      filteredBills.map((bill) => {
+                      filteredBills.slice(0, visibleBillsCount).map((bill) => {
                         const initials = getInitials(bill.patient?.name);
                         const st = avatarGradient(bill.patient?.name);
 
@@ -584,6 +589,18 @@ const BillingPage = () => {
                   </tbody>
                 </table>
               </div>
+
+              {filteredBills.length > visibleBillsCount && (
+                <div className="border-t border-slate-150 p-4 text-center bg-slate-50/20">
+                  <button
+                    type="button"
+                    onClick={() => setVisibleBillsCount((prev) => prev + 40)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 border border-slate-200 rounded-xl bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-800 transition text-xs font-bold shadow-sm cursor-pointer"
+                  >
+                    📥 Load More Transactions
+                  </button>
+                </div>
+              )}
             </div>
           </>
         )}

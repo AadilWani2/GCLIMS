@@ -7,13 +7,15 @@ import Patient from "../models/Patient.js";
 export const getAllReports =
   asyncHandler(async (req, res) => {
     // 1. Fetch active patient IDs
-    const activePatients = await Patient.find({ isDeleted: { $ne: true } }, { _id: 1 });
+    const activePatients = await Patient.find({ isDeleted: { $ne: true } }, { _id: 1 }).lean();
     const activePatientIds = activePatients.map((p) => p._id);
 
     // 2. Fetch only reports of active patients directly using the index
     const activeReports = await Report.find({ patient: { $in: activePatientIds } })
-      .populate("patient")
-      .sort({ createdAt: -1 });
+      .select("patient status referredBy createdAt tests.testName tests.name tests.price")
+      .populate("patient", "name phone age gender")
+      .sort({ createdAt: -1 })
+      .lean();
 
     res.json(activeReports);
   });
@@ -27,7 +29,8 @@ export const getPatientReports =
         .populate("patient")
         .sort({
           createdAt: -1,
-        });
+        })
+        .lean();
 
     res.json(reports);
   });

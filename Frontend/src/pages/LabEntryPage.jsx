@@ -9,6 +9,12 @@ const LabEntryPage = () => {
   const [selectedTests, setSelectedTests] = useState([]);
   const [patients, setPatients] = useState([]);
   const [search, setSearch] = useState("");
+  const [visiblePatientsCount, setVisiblePatientsCount] = useState(30);
+
+  useEffect(() => {
+    setVisiblePatientsCount(30);
+  }, [search]);
+
   const [availableTests, setAvailableTests] = useState([]);
   const [testSearch, setTestSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -769,7 +775,7 @@ const LabEntryPage = () => {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {filteredPatients.length > 0 ? (
-                filteredPatients.map((patient) => (
+                filteredPatients.slice(0, visiblePatientsCount).map((patient) => (
                   <tr key={patient._id} className="hover:bg-slate-50/30 transition duration-150">
                     <td className="px-6 py-4 text-xs font-bold text-slate-700">
                        {patient.name}
@@ -807,6 +813,18 @@ const LabEntryPage = () => {
             </tbody>
           </table>
         </div>
+
+        {filteredPatients.length > visiblePatientsCount && (
+          <div className="border-t border-slate-150 p-4 text-center bg-slate-50/20">
+            <button
+              type="button"
+              onClick={() => setVisiblePatientsCount(prev => prev + 50)}
+              className="inline-flex items-center gap-1.5 px-4 py-2 border border-slate-200 rounded-xl bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-800 transition text-xs font-bold shadow-sm cursor-pointer"
+            >
+              📥 Load More Patients
+            </button>
+          </div>
+        )}
       </div>
       
       {/* ── MANAGE MASTER PRICES MODAL ── */}

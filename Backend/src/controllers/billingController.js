@@ -8,15 +8,17 @@ import Patient from "../models/Patient.js";
 // @access  Private
 export const getAllBills = asyncHandler(async (req, res) => {
   // 1. Fetch active patient IDs
-  const activePatients = await Patient.find({ isDeleted: { $ne: true } }, { _id: 1 });
+  const activePatients = await Patient.find({ isDeleted: { $ne: true } }, { _id: 1 }).lean();
   const activePatientIds = activePatients.map((p) => p._id);
 
-  // 2. Fetch all reports for active patients
-  const activeReports = await Report.find({ patient: { $in: activePatientIds } });
+  // 2. Fetch all reports for active patients (projecting only patient ID and test prices)
+  const activeReports = await Report.find({ patient: { $in: activePatientIds } })
+    .select("patient tests.price")
+    .lean();
 
   // 3. Find all existing Billing records for these active reports in a single query
   const activeReportIds = activeReports.map((r) => r._id);
-  const existingBills = await Billing.find({ report: { $in: activeReportIds } }, { report: 1 });
+  const existingBills = await Billing.find({ report: { $in: activeReportIds } }, { report: 1 }).lean();
   const existingReportIdsSet = new Set(existingBills.map((b) => b.report.toString()));
 
   // 4. Identify reports that lack a bill in memory using the fast Set
@@ -41,11 +43,15 @@ export const getAllBills = asyncHandler(async (req, res) => {
     await Billing.insertMany(newBillsData);
   }
 
-  // 6. Fetch only the active bills populated with patient and report
+  // 6. Fetch only the active bills populated with patient and report (projecting needed fields only)
   const bills = await Billing.find({ patient: { $in: activePatientIds } })
-    .populate("patient")
-    .populate("report")
-    .sort({ createdAt: -1 });
+    .populate("patient", "name phone age gender")
+    .populate({
+      path: "report",
+      select: "referredBy tests.testName tests.category tests.price tests.specimen"
+    })
+    .sort({ createdAt: -1 })
+    .lean();
 
   res.json(bills);
 });
@@ -94,10 +100,10 @@ export const updateBill = asyncHandler(async (req, res) => {
 // @route   GET /api/billing/stats
 // @access  Private
 export const getBillingStats = asyncHandler(async (req, res) => {
-  const activePatients = await Patient.find({ isDeleted: { $ne: true } }, { _id: 1 });
+  const activePatients = await Patient.find({ isDeleted: { $ne: true } }, { _id: 1 }).lean();
   const activePatientIds = activePatients.map((p) => p._id);
 
-  const activeBills = await Billing.find({ patient: { $in: activePatientIds } });
+  const activeBills = await Billing.find({ patient: { $in: activePatientIds } }).lean();
 
   let totalBilled = 0;
   let totalCollected = 0;

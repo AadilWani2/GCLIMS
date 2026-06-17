@@ -51,6 +51,8 @@ const billingSchema = new mongoose.Schema(
   }
 );
 
+billingSchema.index({ patient: 1, createdAt: -1 });
+
 const Billing = mongoose.model("Billing", billingSchema);
 
 export default Billing;

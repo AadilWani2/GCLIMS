@@ -62,9 +62,11 @@ export const getPatients =
     const patients =
       await Patient.find({
         isDeleted: { $ne: true },
-      }).sort({
-        createdAt: -1,
-      });
+      })
+        .sort({
+          createdAt: -1,
+        })
+        .lean();
 
     res.json(patients);
   });

@@ -9,7 +9,7 @@ export const getDashboardStats =
     const activePatients = await Patient.find(
       { isDeleted: { $ne: true } },
       { _id: 1 }
-    );
+    ).lean();
     const activePatientIds = activePatients.map((p) => p._id);
 
     const totalPatients = activePatients.length;
@@ -19,9 +19,10 @@ export const getDashboardStats =
       Report.countDocuments({ patient: { $in: activePatientIds }, status: "Pending" }),
       Report.countDocuments({ patient: { $in: activePatientIds }, status: "Completed" }),
       Report.find({ patient: { $in: activePatientIds } })
-        .populate("patient")
+        .populate("patient", "name phone age gender")
         .sort({ createdAt: -1 })
-        .limit(5),
+        .limit(5)
+        .lean(),
     ]);
 
     res.json({

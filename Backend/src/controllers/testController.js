@@ -5,7 +5,7 @@ import Test from "../models/Test.js";
 // @route   GET /api/tests
 // @access  Private
 export const getTests = asyncHandler(async (req, res) => {
-  const tests = await Test.find({}).sort({ testName: 1 });
+  const tests = await Test.find({}).sort({ testName: 1 }).lean();
   res.json(tests);
 });
 

@@ -62,6 +62,11 @@ const ReportsHistoryPage = () => {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [expandedPatient, setExpandedPatient] = useState(null);
+  const [visibleCount, setVisibleCount] = useState(35);
+
+  useEffect(() => {
+    setVisibleCount(35);
+  }, [search, statusFilter]);
 
   const fetchAll = async () => {
     setLoading(true);
@@ -211,7 +216,7 @@ const ReportsHistoryPage = () => {
 
       {/* ── Patient cards ─────────────────────────────────────────────────── */}
       <div className="space-y-4">
-        {!loading && grouped.map(({ patient, reports }) => {
+        {!loading && grouped.slice(0, visibleCount).map(({ patient, reports }) => {
           const pid = patient._id;
           const isOpen = expandedPatient === pid;
           const stStyles = avatarGradient(patient.name);
@@ -242,7 +247,7 @@ const ReportsHistoryPage = () => {
                     <h3 className="font-bold text-slate-800 text-sm md:text-base leading-snug">
                       {patient.name}
                     </h3>
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-slate-400 text-[9px] md:text-[10px] font-bold uppercase tracking-wider">
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-slate-450 text-[9px] md:text-[10px] font-bold uppercase tracking-wider">
                       <span className="flex items-center gap-1 font-mono text-slate-500">
                         📱 {patient.phone}
                       </span>
@@ -323,8 +328,8 @@ const ReportsHistoryPage = () => {
                             <button
                               id={`view-report-${report._id}`}
                               onClick={(e) => {
-                                e.stopPropagation();
-                                navigate(`/reports/${patient._id}`);
+                                  e.stopPropagation();
+                                  navigate(`/reports/${patient._id}`);
                               }}
                               className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white transition text-xs font-bold shadow-sm cursor-pointer border border-teal-600"
                             >
@@ -341,6 +346,17 @@ const ReportsHistoryPage = () => {
           );
         })}
       </div>
+
+      {!loading && grouped.length > visibleCount && (
+        <div className="text-center pt-4">
+          <button
+            onClick={() => setVisibleCount((prev) => prev + 35)}
+            className="inline-flex items-center gap-1.5 px-4 py-2 border border-slate-200 rounded-xl bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-800 transition text-xs font-bold shadow-sm cursor-pointer"
+          >
+            📥 Load More Records
+          </button>
+        </div>
+      )}
     </div>
   );
 };

@@ -30,6 +30,8 @@ const reportSchema = new mongoose.Schema(
   }
 );
 
+reportSchema.index({ patient: 1, createdAt: -1 });
+
 const Report = mongoose.model(
   "Report",
   reportSchema

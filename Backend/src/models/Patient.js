@@ -40,6 +40,8 @@ const patientSchema = new mongoose.Schema(
   }
 );
 
+patientSchema.index({ isDeleted: 1, createdAt: -1 });
+
 const Patient = mongoose.model(
   "Patient",
   patientSchema
