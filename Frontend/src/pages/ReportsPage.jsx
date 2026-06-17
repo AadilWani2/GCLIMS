@@ -132,6 +132,126 @@ const CLINICAL_INTERPRETATION = {
   "Epithelial Cells": {
     low: "Low or absent epithelial cells is normal.",
     high: "High epithelial cells in urine suggests contamination of the urine sample or inflammation in the urethra or bladder."
+  },
+  "Total Protein": {
+    low: "Low Total Protein suggests malnutrition, malabsorption, liver disease, kidney disorders (such as Nephrotic Syndrome), or severe burns.",
+    high: "High Total Protein can indicate chronic inflammation, infections, dehydration, or bone marrow disorders like Multiple Myeloma."
+  },
+  "Albumin": {
+    low: "Low Albumin indicates liver disease (cirrhosis), kidney disease (nephrotic syndrome), malnutrition, chronic inflammation, or malabsorption.",
+    high: "High Albumin is almost always caused by acute dehydration."
+  },
+  "Globulin": {
+    low: "Low Globulin can be seen in malnutrition, liver disease, kidney disease, or immunodeficiencies.",
+    high: "High Globulin suggests chronic infections, inflammatory diseases, liver cirrhosis, or blood cell disorders (Multiple Myeloma)."
+  },
+  "A/G Ratio": {
+    low: "Low A/G ratio (low albumin relative to globulin) is associated with autoimmune disease, liver disease, or kidney disease.",
+    high: "High A/G ratio suggests underproduction of globulins, which can occur in genetic deficiencies or leukemia."
+  },
+  "BUN": {
+    low: "Low BUN can indicate low-protein diet, malnutrition, overhydration, or severe liver disease.",
+    high: "High BUN indicates impaired kidney function, dehydration, high protein intake, congestive heart failure, or gastrointestinal bleeding."
+  },
+  "Neutrophils": {
+    low: "Low Neutrophils (Neutropenia) increases vulnerability to bacterial infections; caused by viral infections, autoimmune disorders, or bone marrow suppression.",
+    high: "High Neutrophils (Neutrophilia) indicates active bacterial infection, acute inflammation, tissue necrosis, or physical/mental stress."
+  },
+  "Eosinophils": {
+    low: "Low Eosinophils is generally normal and of minimal clinical concern.",
+    high: "High Eosinophils (Eosinophilia) is strongly associated with allergic reactions, asthma, drug sensitivities, or parasitic infections."
+  },
+  "Monocytes": {
+    low: "Low Monocytes is usually clinically insignificant but can occasionally indicate bone marrow injury.",
+    high: "High Monocytes (Monocytosis) suggests chronic inflammatory diseases, viral or fungal infections, tuberculosis, or recovery from acute infection."
+  },
+  "Basophils": {
+    low: "Low Basophils is clinically normal and has no diagnostic significance.",
+    high: "High Basophils (Basophilia) indicates chronic inflammation, allergic reactions, or myeloproliferative disorders."
+  },
+  "ESR": {
+    low: "Low ESR is normal and not a clinical concern; can be seen in polycythemia or sickle cell disease.",
+    high: "High ESR is a non-specific marker of active inflammation, infection, autoimmune disease, tissue injury, or pregnancy."
+  },
+  "T3": {
+    low: "Low T3 hormone indicates Hypothyroidism, causing slow metabolism, fatigue, cold intolerance, and weight gain.",
+    high: "High T3 hormone indicates Hyperthyroidism, causing fast metabolism, weight loss, heat intolerance, and rapid heart rate."
+  },
+  "T4": {
+    low: "Low T4 hormone indicates Hypothyroidism, causing slow metabolism, fatigue, cold intolerance, and weight gain.",
+    high: "High T4 hormone indicates Hyperthyroidism, causing fast metabolism, weight loss, heat intolerance, and rapid heart rate."
+  },
+  "Sodium": {
+    low: "Low Sodium (Hyponatremia) causes confusion, headache, nausea, and fatigue; caused by overhydration, diuretics, or kidney/heart failure.",
+    high: "High Sodium (Hypernatremia) indicates severe dehydration, excessive salt intake, or kidney disorders."
+  },
+  "Potassium": {
+    low: "Low Potassium (Hypokalemia) causes muscle cramps, weakness, and cardiac arrhythmias; caused by vomiting, diarrhea, or diuretics.",
+    high: "High Potassium (Hyperkalemia) is a critical concern that can cause severe cardiac arrest; caused by kidney failure, cellular damage, or certain drugs."
+  },
+  "Chloride": {
+    low: "Low Chloride (Hypochloremia) is linked to prolonged vomiting, respiratory acidosis, or dehydration.",
+    high: "High Chloride (Hyperchloremia) can indicate kidney disorders, metabolic acidosis, or dehydration."
+  },
+  "Bicarbonate": {
+    low: "Low Bicarbonate indicates metabolic acidosis, which can occur in diabetic ketoacidosis, severe diarrhea, or kidney disease.",
+    high: "High Bicarbonate suggests metabolic alkalosis, often due to severe vomiting, dehydration, or respiratory dysfunction."
+  },
+  "RA Factor": {
+    low: "Negative RA Factor is normal, though it does not completely rule out early rheumatoid arthritis.",
+    high: "High RA Factor is a primary indicator of Rheumatoid Arthritis or other chronic autoimmune disorders."
+  },
+  "CRP": {
+    low: "Low CRP is normal, indicating no active systemic inflammation.",
+    high: "High CRP is a sensitive marker of acute bacterial infection, active inflammation, cardiovascular risk, or tissue injury."
+  },
+  "ASO": {
+    low: "Low or negative ASO is normal, indicating no recent streptococcal infection.",
+    high: "High ASO titer indicates a recent group A streptococcal infection (e.g., strep throat) which can lead to rheumatic fever or glomerulonephritis."
+  },
+  "Urine Glucose": {
+    low: "Absent urine glucose is normal.",
+    high: "High glucose in urine (Glycosuria) is a key indicator of uncontrolled Diabetes Mellitus or renal tubule disorders."
+  },
+  "Urine Protein": {
+    low: "Absent urine protein is normal.",
+    high: "High protein in urine (Proteinuria) indicates kidney damage, glomerular dysfunction, urinary tract infection, or high blood pressure."
+  },
+  "Urine Ketones": {
+    low: "Absent urine ketones is normal.",
+    high: "High ketones in urine indicates diabetic ketoacidosis (DKA), starvation, carbohydrate restriction, or prolonged vomiting."
+  },
+  "Urine Bilirubin": {
+    low: "Absent urine bilirubin is normal.",
+    high: "Presence of bilirubin in urine indicates liver dysfunction, biliary obstruction, or gallbladder disease."
+  },
+  "Urine RBCs": {
+    low: "Absent or minimal RBCs in urine is normal.",
+    high: "High RBCs in urine (Hematuria) indicates kidney stones, urinary tract infection, trauma, or kidney disorders."
+  },
+  "Dengue NS1": {
+    low: "Negative result is normal, but may require repeat testing if early in the clinical course.",
+    high: "Positive Dengue NS1 marker indicates active Dengue virus infection."
+  },
+  "Dengue IgG": {
+    low: "Negative result is normal, indicating no past Dengue infection antibodies detected.",
+    high: "Positive Dengue IgG antibody suggests previous exposure or secondary Dengue virus infection."
+  },
+  "Dengue IgM": {
+    low: "Negative result is normal, indicating no recent Dengue infection antibodies detected.",
+    high: "Positive Dengue IgM antibody suggests recent active Dengue virus infection."
+  },
+  "HIV": {
+    low: "Non-reactive result is normal, indicating no active HIV infection detected.",
+    high: "Reactive HIV result indicates active HIV antibodies; requires immediate clinical follow-up and confirmatory testing."
+  },
+  "HBsAg": {
+    low: "Non-reactive result is normal, indicating no active Hepatitis B surface antigen detected.",
+    high: "Reactive HBsAg result indicates active Hepatitis B infection; requires immediate clinical follow-up and confirmatory testing."
+  },
+  "HCV": {
+    low: "Non-reactive result is normal, indicating no active Hepatitis C antibodies detected.",
+    high: "Reactive HCV result indicates active Hepatitis C infection; requires immediate clinical follow-up and confirmatory testing."
   }
 };
 
@@ -170,7 +290,37 @@ const getClinicalInterpretation = (paramName, status) => {
     { pattern: /^ph$/i, key: "Urine pH" },
     { pattern: /specific.*gravity/i, key: "Urine Specific Gravity" },
     { pattern: /pus.*cells/i, key: "Pus Cells" },
-    { pattern: /epithelial.*cells/i, key: "Epithelial Cells" }
+    { pattern: /epithelial.*cells/i, key: "Epithelial Cells" },
+    { pattern: /total.*protein/i, key: "Total Protein" },
+    { pattern: /albumin/i, key: "Albumin" },
+    { pattern: /globulin/i, key: "Globulin" },
+    { pattern: /a\/g.*ratio/i, key: "A/G Ratio" },
+    { pattern: /\bbun\b|blood.*urea.*nitrogen/i, key: "BUN" },
+    { pattern: /neutrophil/i, key: "Neutrophils" },
+    { pattern: /eosinophil/i, key: "Eosinophils" },
+    { pattern: /monocyte/i, key: "Monocytes" },
+    { pattern: /basophil/i, key: "Basophils" },
+    { pattern: /\besr\b|erythrocyte.*sedimentation/i, key: "ESR" },
+    { pattern: /\bt3\b|triiodothyronine/i, key: "T3" },
+    { pattern: /\bt4\b|thyroxine/i, key: "T4" },
+    { pattern: /sodium/i, key: "Sodium" },
+    { pattern: /potassium/i, key: "Potassium" },
+    { pattern: /chloride/i, key: "Chloride" },
+    { pattern: /bicarbonate/i, key: "Bicarbonate" },
+    { pattern: /rheumatoid.*factor|\bra\b.*factor/i, key: "RA Factor" },
+    { pattern: /c-reactive.*protein|\bcrp\b/i, key: "CRP" },
+    { pattern: /antistreptolysin|\baso\b/i, key: "ASO" },
+    { pattern: /urine.*glucose|urine.*sugar/i, key: "Urine Glucose" },
+    { pattern: /urine.*protein/i, key: "Urine Protein" },
+    { pattern: /urine.*ketone/i, key: "Urine Ketones" },
+    { pattern: /urine.*bilirubin/i, key: "Urine Bilirubin" },
+    { pattern: /urine.*rbc|urine.*red.*blood/i, key: "Urine RBCs" },
+    { pattern: /dengue.*ns1/i, key: "Dengue NS1" },
+    { pattern: /dengue.*igg/i, key: "Dengue IgG" },
+    { pattern: /dengue.*igm/i, key: "Dengue IgM" },
+    { pattern: /\bhiv\b/i, key: "HIV" },
+    { pattern: /hbsag/i, key: "HBsAg" },
+    { pattern: /hcv/i, key: "HCV" }
   ];
 
   for (const rule of mappingRules) {
