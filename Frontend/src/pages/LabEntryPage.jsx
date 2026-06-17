@@ -184,7 +184,7 @@ const LabEntryPage = () => {
   });
 
   const handleKeyDown = (e) => {
-    if (e.target.tagName === "INPUT" && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+    if ((e.target.tagName === "INPUT" || e.target.tagName === "SELECT") && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
       const form = e.target.form;
       if (!form) return;
       
