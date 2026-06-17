@@ -93,8 +93,11 @@ const LabEntryPage = () => {
   };
 
   const checkRangeStatus = (parameter, value) => {
-    if (!value || isNaN(value)) return null;
-    const numValue = parseFloat(value);
+    if (!value) return null;
+    const match = String(value).match(/[0-9]*\.?[0-9]+/);
+    if (!match) return null;
+    const numValue = parseFloat(match[0]);
+    if (isNaN(numValue)) return null;
     
     const rangeText = getNormalRange(parameter);
     const rangeStr = rangeText.split(" ")[0]; 
