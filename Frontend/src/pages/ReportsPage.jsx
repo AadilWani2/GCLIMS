@@ -85,12 +85,45 @@ const CLINICAL_INTERPRETATION = {
 
 const getClinicalInterpretation = (paramName, status) => {
   if (!status || status === "Normal") return null;
-  const cleanName = paramName.toLowerCase();
+  const cleanName = paramName.toLowerCase().trim();
+  
+  const mappingRules = [
+    { pattern: /hemoglobin/i, key: "Hemoglobin" },
+    { pattern: /\brbc\b|red.*blood.*cell/i, key: "RBC Count" },
+    { pattern: /\bwbc\b|white.*blood.*cell|leukocyte/i, key: "WBC Count" },
+    { pattern: /platelet/i, key: "Platelet Count" },
+    { pattern: /\burea\b/i, key: "Urea" },
+    { pattern: /creatinine/i, key: "Creatinine" },
+    { pattern: /uric.*acid/i, key: "Uric Acid" },
+    { pattern: /bilirubin/i, key: "Bilirubin Total" },
+    { pattern: /sgot|ast/i, key: "SGOT (AST)" },
+    { pattern: /sgpt|alt/i, key: "SGPT (ALT)" },
+    { pattern: /alkaline.*phosphatase|alp/i, key: "Alkaline Phosphatase" },
+    { pattern: /cholesterol.*total|total.*cholesterol/i, key: "Cholesterol Total" },
+    { pattern: /triglycerides/i, key: "Triglycerides" },
+    { pattern: /hdl/i, key: "HDL Cholesterol" },
+    { pattern: /ldl/i, key: "LDL Cholesterol" },
+    { pattern: /fasting.*glucose|fasting.*sugar|fbs/i, key: "Fasting Blood Sugar" },
+    { pattern: /hba1c|glycated.*hemoglobin/i, key: "HbA1c" },
+    { pattern: /tsh|thyroid.*stimulating/i, key: "TSH" }
+  ];
+
+  for (const rule of mappingRules) {
+    if (rule.pattern.test(cleanName)) {
+      const value = CLINICAL_INTERPRETATION[rule.key];
+      if (value) {
+        return status === "High" ? value.high : value.low;
+      }
+    }
+  }
+
   for (const [key, value] of Object.entries(CLINICAL_INTERPRETATION)) {
-    if (cleanName.includes(key.toLowerCase())) {
+    const cleanKey = key.toLowerCase();
+    if (cleanName.includes(cleanKey) || cleanKey.includes(cleanName)) {
       return status === "High" ? value.high : value.low;
     }
   }
+
   return null;
 };
 
