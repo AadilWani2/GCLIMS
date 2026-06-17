@@ -217,6 +217,26 @@ const LabEntryPage = () => {
     }
   };
 
+  const deletePatientHandler = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this patient? All their reports will remain but the patient will be deleted from the registry. Continue?")) return;
+
+    try {
+      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+
+      await api.put(`/patients/${id}/delete`, {}, config);
+      alert("Patient Deleted");
+      fetchPatients();
+    } catch (error) {
+      console.log(error);
+      alert("Failed to delete patient");
+    }
+  };
+
   return (
     <div className="space-y-6 font-inter pb-12">
       {/* ── Page Header ── */}
@@ -691,7 +711,7 @@ const LabEntryPage = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50/30">
-                {["Patient Name", "Contact Phone", "Diagnostic Reports"].map((h) => (
+                {["Patient Name", "Contact Phone", "Actions"].map((h) => (
                   <th key={h} className="px-6 py-3.5 text-[9px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-150">
                     {h}
                   </th>
@@ -711,12 +731,20 @@ const LabEntryPage = () => {
                     </td>
 
                     <td className="px-6 py-4">
-                      <button
-                        onClick={() => navigate(`/reports/${patient._id}`)}
-                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-slate-50 hover:bg-teal-600 hover:text-white text-teal-700 transition font-bold text-xs cursor-pointer border border-slate-200 shadow-sm"
-                      >
-                        📂 Open Diagnostic Report
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => navigate(`/reports/${patient._id}`)}
+                          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-slate-50 hover:bg-teal-600 hover:text-white text-teal-700 transition font-bold text-xs cursor-pointer border border-slate-200 shadow-sm"
+                        >
+                          📂 Open Diagnostic Report
+                        </button>
+                        <button
+                          onClick={() => deletePatientHandler(patient._id)}
+                          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-slate-50 hover:bg-rose-600 hover:text-white text-rose-700 transition font-bold text-xs cursor-pointer border border-slate-200 shadow-sm"
+                        >
+                          🗑️ Delete
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
