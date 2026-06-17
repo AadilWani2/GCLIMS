@@ -80,6 +80,58 @@ const CLINICAL_INTERPRETATION = {
   "TSH": {
     low: "Low TSH indicates Hyperthyroidism (overactive thyroid), causing weight loss, rapid heartbeat, and anxiety.",
     high: "High TSH indicates Hypothyroidism (underactive thyroid), causing fatigue, weight gain, depression, and cold sensitivity."
+  },
+  "PCV": {
+    low: "Low PCV (Hematocrit) indicates anemia, overhydration, nutrient deficiency, or chronic disease.",
+    high: "High PCV (Hematocrit) suggests dehydration, erythrocytosis, smoking, chronic hypoxia, or bone marrow overproduction."
+  },
+  "MCV": {
+    low: "Low MCV (Microcytosis) is typically seen in iron deficiency anemia or thalassemia, where red blood cells are smaller than normal.",
+    high: "High MCV (Macrocytosis) indicates vitamin B12 or folate deficiency, liver disease, alcohol abuse, or hypothyroidism."
+  },
+  "MCH": {
+    low: "Low MCH is commonly caused by iron deficiency anemia, indicating decreased hemoglobin content in red blood cells.",
+    high: "High MCH is often seen in macrocytic anemias, such as those caused by folate or vitamin B12 deficiencies."
+  },
+  "MCHC": {
+    low: "Low MCHC (Hypochromia) is a hallmark of iron deficiency anemia or thalassemia, where red blood cells have less hemoglobin concentration.",
+    high: "High MCHC can indicate autoimmune hemolytic anemia, severe dehydration, or hereditary spherocytosis."
+  },
+  "RDW": {
+    low: "Low RDW is generally clinically insignificant and indicates that red blood cells are uniform in size.",
+    high: "High RDW indicates a high variation in red blood cell size (Anisocytosis), commonly seen in iron deficiency anemia or vitamin B12/folate deficiency."
+  },
+  "Granulocytes": {
+    low: "Low Granulocytes (Neutropenia) indicates an increased risk of infections; common causes include viral infections, autoimmune conditions, or chemotherapy.",
+    high: "High Granulocytes (Neutrophilia) suggests an active bacterial infection, acute inflammation, physical stress, or tissue injury."
+  },
+  "Lymphocytes": {
+    low: "Low Lymphocytes (Lymphopenia) can result from viral infections, malnutrition, steroid usage, chemotherapy, or autoimmune conditions.",
+    high: "High Lymphocytes (Lymphocytosis) is commonly caused by viral infections, chronic infections, or lymphatic leukemia."
+  },
+  "Mid Cells": {
+    low: "Low Mid Cells is usually clinically insignificant but can occasionally indicate bone marrow suppression or severe stress.",
+    high: "High Mid Cells (elevated monocytes, eosinophils, or basophils) suggests allergies, asthma, parasitic infections, or chronic inflammatory disorders."
+  },
+  "VLDL": {
+    low: "Low VLDL is generally associated with healthy lipid levels, though extremely low levels can stem from malnutrition or genetic factors.",
+    high: "High VLDL levels contribute to arterial plaque buildup, increasing cardiovascular risk and hyperlipidemia."
+  },
+  "Urine pH": {
+    low: "Low urine pH (acidic urine) can indicate diabetic ketoacidosis, chronic diarrhea, starvation, or a high-protein diet.",
+    high: "High urine pH (alkaline urine) can suggest urinary tract infections (UTI), renal tubular acidosis, or a vegetarian diet."
+  },
+  "Urine Specific Gravity": {
+    low: "Low specific gravity indicates dilute urine, commonly due to high fluid intake, diabetes insipidus, or kidney failure.",
+    high: "High specific gravity indicates concentrated urine, often caused by dehydration, sweating, vomiting, or glycosuria."
+  },
+  "Pus Cells": {
+    low: "Low or absent pus cells in urine is normal.",
+    high: "High pus cells in urine (Pyuria) is a strong indicator of a urinary tract infection (UTI) or inflammation in the urinary tract."
+  },
+  "Epithelial Cells": {
+    low: "Low or absent epithelial cells is normal.",
+    high: "High epithelial cells in urine suggests contamination of the urine sample or inflammation in the urethra or bladder."
   }
 };
 
@@ -88,6 +140,10 @@ const getClinicalInterpretation = (paramName, status) => {
   const cleanName = paramName.toLowerCase().trim();
   
   const mappingRules = [
+    { pattern: /\bpcv\b|packed.*cell.*volume|hematocrit/i, key: "PCV" },
+    { pattern: /\bmcv\b|mean.*corpuscular.*volume/i, key: "MCV" },
+    { pattern: /\bmchc\b|mean.*corpuscular.*hemoglobin.*conc/i, key: "MCHC" },
+    { pattern: /\bmch\b|mean.*corpuscular.*hemoglobin/i, key: "MCH" },
     { pattern: /hemoglobin/i, key: "Hemoglobin" },
     { pattern: /\brbc\b|red.*blood.*cell/i, key: "RBC Count" },
     { pattern: /\bwbc\b|white.*blood.*cell|leukocyte/i, key: "WBC Count" },
@@ -105,7 +161,16 @@ const getClinicalInterpretation = (paramName, status) => {
     { pattern: /ldl/i, key: "LDL Cholesterol" },
     { pattern: /fasting.*glucose|fasting.*sugar|fbs/i, key: "Fasting Blood Sugar" },
     { pattern: /hba1c|glycated.*hemoglobin/i, key: "HbA1c" },
-    { pattern: /tsh|thyroid.*stimulating/i, key: "TSH" }
+    { pattern: /tsh|thyroid.*stimulating/i, key: "TSH" },
+    { pattern: /rdw/i, key: "RDW" },
+    { pattern: /granulocyte|gra/i, key: "Granulocytes" },
+    { pattern: /lymphocyte|lym/i, key: "Lymphocytes" },
+    { pattern: /mid.*cells|mid/i, key: "Mid Cells" },
+    { pattern: /vldl/i, key: "VLDL" },
+    { pattern: /^ph$/i, key: "Urine pH" },
+    { pattern: /specific.*gravity/i, key: "Urine Specific Gravity" },
+    { pattern: /pus.*cells/i, key: "Pus Cells" },
+    { pattern: /epithelial.*cells/i, key: "Epithelial Cells" }
   ];
 
   for (const rule of mappingRules) {
